@@ -1,0 +1,7 @@
+{ ... }:
+
+{
+  services.swww = {
+    enable = true;
+  };
+}

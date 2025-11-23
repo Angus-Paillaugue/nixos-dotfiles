@@ -18,14 +18,23 @@
               formatting.command = [ "nixfmt" ];
             };
           };
+          "[nix]" = {
+            "editor.defaultFormatter" = "jnoortheen.nix-ide";
+          };
           "editor.fontFamily" = "JetbrainsMono Nerd Font";
           "terminal.integrated.fontFamily" = "JetbrainsMono Nerd Font";
           "editor.fontLigatures" = true;
           "explorer.confirmDragAndDrop" = false;
 
-          "[css].editor.defaultFormatter" = "vscode.css-language-features";
-          "[java].editor.defaultFormatter" = "redhat.java";
-          "[markdown]editor.defaultFormatter" = "yzhang.markdown-all-in-one";
+          "[css]" = {
+            "editor.defaultFormatter" = "vscode.css-language-features";
+          };
+          "[java]" = {
+            "editor.defaultFormatter" = "redhat.java";
+          };
+          "[markdown]" = {
+            "editor.defaultFormatter" = "yzhang.markdown-all-in-one";
+          };
           "[python]" = {
             "editor.formatOnType" = true;
             "editor.defaultFormatter" = "ms-python.black-formatter";
@@ -143,7 +152,7 @@
           ];
           "terminal.integrated.cursorStyle" = "line";
           "terminal.integrated.cursorWidth" = 2;
-          "terminal.integrated.defaultProfile.linux" = "zsh";
+          "terminal.integrated.defaultProfile.linux" = "fish";
           "terminal.integrated.env.linux" = {
             "GTK_PATH" = null;
             "GIO_MODULE_DIR" = null;

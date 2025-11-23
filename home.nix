@@ -3,7 +3,8 @@
 {
   home.username = "angus";
   home.homeDirectory = "/home/angus";
-  home.stateVersion = "25.05"; # Please read the comment before changing.
+  home.stateVersion = "25.05";
+  nixpkgs.config.allowUnfree = true;
 
   imports = [
     ./modules/hyprland.nix
@@ -12,6 +13,28 @@
     ./modules/code/code.nix
     ./modules/swww.nix
   ];
+
+  programs.zen-browser = {
+    enable = true;
+    policies = {
+      AutofillAddressEnabled = false;
+      AutofillCreditCardEnabled = false;
+      DisableAppUpdate = true;
+      DisableFeedbackCommands = true;
+      DisableFirefoxStudies = true;
+      DisablePocket = true;
+      DisableTelemetry = true;
+      DontCheckDefaultBrowser = true;
+      NoDefaultBookmarks = true;
+      OfferToSaveLogins = false;
+      EnableTrackingProtection = {
+        Value = true;
+        Locked = true;
+        Cryptomining = true;
+        Fingerprinting = true;
+      };
+    };
+  };
 
   home.packages = with pkgs; [
     firefox
@@ -32,7 +55,7 @@
   };
   programs.git = {
     enable = true;
-    extraConfig ={
+    settings ={
       user = {
         name = "Angus-Paillaugue";
         email = "angus.paillaugue40@gmail.com";

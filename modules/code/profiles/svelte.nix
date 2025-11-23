@@ -1,8 +1,6 @@
 { pkgs, ... }:
 {
-  programs.vscode.profiles.nix = {
-    extensions = with pkgs.vscode-extensions; [
-      # TODO: fix marketplace not working
+  programs.vscode.profiles.svelte = {
       # aaron-bond.better-comments
       # ardenivanov.svelte-intellisense
       # astro-build.astro-vscode
@@ -102,6 +100,6 @@
       # yoavbls.pretty-ts-errors
       # yzhang.markdown-all-in-one
       # zignd.html-css-class-completion
-    ];
+    # ];
   };
 }

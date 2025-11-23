@@ -162,6 +162,7 @@
         "$mod, C, exec, code"
         "$mod, Q, killactive"
         "$mod, L, exec, hyprlock"
+        "$mod, E, exec, nautilus"
         ", Print, exec, grimblast copy area"
         "ALT, TAB, workspace, e+1"
         "ALT+SHIFT, TAB, workspace, e-1"

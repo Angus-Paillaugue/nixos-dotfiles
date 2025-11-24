@@ -7,13 +7,16 @@
   nixpkgs.config.allowUnfree = true;
 
   imports = [
+    ./modules/code.nix
+    ./modules/fastfetch.nix
+    ./modules/fish.nix
+    ./modules/gh.nix
+    ./modules/git.nix
     ./modules/hyprland.nix
     ./modules/hyprlock.nix
     ./modules/kitty.nix
-    ./modules/code.nix
+    ./modules/starship.nix
     ./modules/swww.nix
-    ./modules/fish.nix
-    ./modules/git.nix
     ./modules/zen.nix
   ];
 
@@ -29,6 +32,18 @@
     fnm
     bun
     nwg-displays
+    jq
+    libreoffice
+    prismlauncher
+    remmina
+    vlc
+    curl
+    wget
+    tree
+    bat
+    gnumake
+    eza
+    bat
   ];
 
   home.sessionVariables = {

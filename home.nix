@@ -10,57 +10,30 @@
     ./modules/hyprland.nix
     ./modules/hyprlock.nix
     ./modules/kitty.nix
-    ./modules/code/code.nix
+    ./modules/code.nix
     ./modules/swww.nix
+    ./modules/fish.nix
+    ./modules/git.nix
+    ./modules/zen.nix
   ];
-
-  programs.zen-browser = {
-    enable = true;
-    policies = {
-      AutofillAddressEnabled = false;
-      AutofillCreditCardEnabled = false;
-      DisableAppUpdate = true;
-      DisableFeedbackCommands = true;
-      DisableFirefoxStudies = true;
-      DisablePocket = true;
-      DisableTelemetry = true;
-      DontCheckDefaultBrowser = true;
-      NoDefaultBookmarks = true;
-      OfferToSaveLogins = false;
-      EnableTrackingProtection = {
-        Value = true;
-        Locked = true;
-        Cryptomining = true;
-        Fingerprinting = true;
-      };
-    };
-  };
 
   home.packages = with pkgs; [
-    firefox
     nil
     nixfmt-rfc-style
+    btop
+    bibata-cursors
+    flat-remix-gtk
+    nautilus
     nerd-fonts.jetbrains-mono
+    google-fonts
+    fnm
+    bun
+    nwg-displays
   ];
 
-  programs.fish = {
-    enable = true;
-    interactiveShellInit = ''
-      set fish_greeting;
-    '';
-  };
   home.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     NIXOS_FORCE_FONTCONFIG_DIRS = "1";
-  };
-  programs.git = {
-    enable = true;
-    settings ={
-      user = {
-        name = "Angus-Paillaugue";
-        email = "angus.paillaugue40@gmail.com";
-      };
-    };
   };
 
   # plain files is through 'home.file'.

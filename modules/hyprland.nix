@@ -1,4 +1,33 @@
+{ pkgs, ... }:
+
 {
+  home.pointerCursor = {
+    gtk.enable = true;
+    # x11.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 16;
+  };
+
+  gtk = {
+    enable = true;
+    colorScheme = "dark";
+
+    theme = {
+      package = pkgs.flat-remix-gtk;
+      name = "Flat-Remix-GTK-Grey-Darkest";
+    };
+
+    iconTheme = {
+      package = pkgs.adwaita-icon-theme;
+      name = "Adwaita";
+    };
+
+    font = {
+      name = "Sans";
+      size = 11;
+    };
+  };
   wayland.windowManager.hyprland = {
     enable = true;
     # set the Hyprland and XDPH packages to null to use the ones from the NixOS module
@@ -157,7 +186,7 @@
       ];
       "$mod" = "SUPER";
       bind = [
-        "$mod, F, exec, firefox"
+        "$mod, Z, exec, zen"
         "$mod, T, exec, kitty"
         "$mod, C, exec, code"
         "$mod, Q, killactive"

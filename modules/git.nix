@@ -1,10 +1,10 @@
 {
   programs.git = {
     enable = true;
-    settings ={
+    settings = {
       user = {
         name = "Angus-Paillaugue";
-        email = "angus.paillaugue40@gmail.com";
+        email = "angus@paillaugue.fr";
       };
     };
   };

@@ -1,0 +1,287 @@
+hl.config({
+  gestures = {
+    workspace_swipe_distance = 700,
+    workspace_swipe_cancel_ratio = 0.2,
+    workspace_swipe_min_speed_to_force = 5,
+    workspace_swipe_direction_lock = true,
+    workspace_swipe_direction_lock_threshold = 10,
+    workspace_swipe_create_new = true
+  },
+
+  general = {
+    -- Gaps and border
+    gaps_in = 4,
+    gaps_out = 5,
+    gaps_workspaces = 50,
+    border_size = 1,
+    resize_on_border = true,
+    no_focus_fallback = true,
+    allow_tearing = true, -- This just allows the `immediate` window rule to work
+    snap = {
+      enabled = true,
+      window_gap = 4,
+      monitor_gap = 5,
+      respect_gaps = true
+    }
+  },
+
+  decoration = {
+    -- 2 = circle, higher = squircle, 4 = very obvious squircle
+    -- Fuck clearly visible squircles. 100% Apple brainrot.
+    rounding_power = 2.5,
+    rounding = 18,
+
+    blur = {
+      enabled = true,
+      xray = true,
+      special = false,
+      new_optimizations = true,
+      size = 14,
+      passes = 3,
+      brightness = 1,
+      noise = 0.04,
+      contrast = 1,
+      -- vibrancy = 0.8,
+      -- vibrancy_darkness = 0.8,
+      popups = false,
+      popups_ignorealpha = 0.6,
+      input_methods = true,
+      input_methods_ignorealpha = 0.8
+    },
+    shadow = {
+      enabled = true,
+      range = 30,
+      offset = { 0, 2 },
+      render_power = 4,
+      color = "rgba(00000010)"
+    },
+    -- Dim
+    dim_inactive = true,
+    dim_strength = 0.025,
+    dim_special = 0.07,
+    active_opacity = 0.8,
+    inactive_opacity = 0.8,
+  },
+
+  animations = {
+    enabled = true
+  },
+
+  dwindle = {
+    preserve_split = true,
+    smart_split = false,
+    smart_resizing = false
+    -- precise_mouse_move = true,
+  },
+
+  input = {
+    kb_layout = "us,fr",
+    numlock_by_default = true,
+    repeat_delay = 250,
+    repeat_rate = 35,
+
+    follow_mouse = 1,
+    off_window_axis_events = 2,
+
+    touchpad = {
+      natural_scroll = true,
+      disable_while_typing = true,
+      clickfinger_behavior = true,
+      scroll_factor = 0.5
+    }
+  },
+
+  misc = {
+    disable_hyprland_logo = true,
+    disable_splash_rendering = true,
+    vrr = 0,
+    mouse_move_enables_dpms = true,
+    key_press_enables_dpms = true,
+    animate_manual_resizes = false,
+    animate_mouse_windowdragging = false,
+    enable_swallow = false,
+    swallow_regex = "(foot|kitty|allacritty|Alacritty)",
+    on_focus_under_fullscreen = 2,
+    allow_session_lock_restore = true,
+    session_lock_xray = true,
+    initial_workspace_tracking = false,
+    focus_on_activate = true
+  },
+
+  binds = {
+    scroll_event_delay = 0,
+    hide_special_on_workspace_change = true
+  },
+
+  cursor = {
+    zoom_factor = 1,
+    zoom_rigid = false,
+    zoom_disable_aa = true,
+    hotspot_padding = 1
+  },
+
+  xwayland = {
+    force_zero_scaling = true
+  }
+})
+
+
+-- Curves
+hl.curve("easeOutQuint", {
+  type = "bezier",
+  points = { { 0.23, 1 }, { 0.32, 1 } }
+})
+hl.curve("linear", {
+  type = "bezier",
+  points = { { 0, 0 }, { 1, 1 } }
+})
+hl.curve("almostLinear", {
+  type = "bezier",
+  points = { { 0.5, 0.5 }, { 0.75, 1 } }
+})
+hl.curve("quick", {
+  type = "bezier",
+  points = { { 0.15, 0 }, { 0.1, 1 } }
+})
+hl.curve("menu_decel", {
+  type = "bezier",
+  points = { { 0.1, 1 }, { 0, 1 } }
+})
+hl.curve("emphasizedDecel", {
+  type = "bezier",
+  points = { { 0.05, 0.7 }, { 0.1, 1 } }
+})
+hl.curve("emphasizedAccel", {
+  type = "bezier",
+  points = { { 0.3, 0 }, { 0.8, 0.15 } }
+})
+hl.curve("standardDecel", {
+  type = "bezier",
+  points = { { 0, 0 }, { 0, 1 } }
+})
+-- Configs
+-- windows
+hl.animation({
+  leaf = "windowsMove",
+  enabled = true,
+  speed = 3,
+  bezier = "emphasizedDecel",
+  style = "slide"
+})
+
+hl.animation({
+  leaf = "fade",
+  enabled = true,
+  speed = 3.03,
+  bezier = "quick"
+})
+hl.animation({
+  leaf = "fadeOut",
+  enabled = true,
+  speed = 1.46,
+  bezier = "almostLinear"
+})
+hl.animation({
+  leaf = "fadeIn",
+  enabled = true,
+  speed = 1.73,
+  bezier = "almostLinear"
+})
+hl.animation({
+  leaf = "windowsOut",
+  enabled = true,
+  speed = 1.49,
+  bezier = "linear",
+  style = "popin 87%"
+})
+hl.animation({
+  leaf = "windowsIn",
+  enabled = true,
+  speed = 4.1,
+  bezier = "easeOutQuint",
+  style = "popin 87%"
+})
+hl.animation({
+  leaf = "border",
+  enabled = true,
+  speed = 5.39,
+  bezier = "easeOutQuint"
+})
+hl.animation({
+  leaf = "windows",
+  enabled = true,
+  speed = 4.79,
+  bezier = "easeOutQuint"
+})
+
+-- layers
+hl.animation({
+  leaf = "layers",
+  enabled = true,
+  speed = 3.81,
+  bezier = "easeOutQuint"
+})
+hl.animation({
+  leaf = "layersIn",
+  enabled = true,
+  speed = 4,
+  bezier = "easeOutQuint",
+  style = "fade"
+})
+hl.animation({
+  leaf = "layersOut",
+  enabled = true,
+  speed = 2.5,
+  bezier = "linear",
+  style = "fade"
+})
+-- fade
+hl.animation({
+  leaf = "fadeLayersIn",
+  enabled = true,
+  speed = 1.79,
+  bezier = "almostLinear"
+})
+hl.animation({
+  leaf = "fadeLayersOut",
+  enabled = true,
+  speed = 1.39,
+  bezier = "almostLinear"
+})
+-- workspaces
+hl.animation({
+  leaf = "workspaces",
+  enabled = true,
+  speed = 7,
+  bezier = "menu_decel",
+  style = "slide"
+})
+hl.animation({
+  leaf = "workspacesIn",
+  enabled = true,
+  speed = 1.21,
+  bezier = "easeOutQuint",
+  style = "slide"
+})
+hl.animation({
+  leaf = "workspacesOut",
+  enabled = true,
+  speed = 1.94,
+  bezier = "easeOutQuint",
+  style = "slide"
+})
+-- specialWorkspace
+hl.animation({
+  leaf = "specialWorkspaceIn",
+  enabled = true,
+  speed = 2.8,
+  bezier = "emphasizedDecel",
+  style = "slidevert"
+})
+hl.animation({
+  leaf = "specialWorkspaceOut",
+  enabled = true,
+  speed = 1.2,
+  bezier = "emphasizedAccel",
+  style = "slidevert"
+})

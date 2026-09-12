@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  home:
+    desc: Rebuilds the home-manager config
+    cmds:
+      - home-manager switch --flake ~/.config/home-manager#angus
+
+  system:
+    desc: Rebuilds the NixOS system config
+    cmds:
+      - sudo nixos-rebuild switch -I nixos-config=$HOME/.config/home-manager/nixos/configuration.nix
+
+  clean:
+    cmds:
+      - task: clean-garbage
+      - task: clean-store
+
+  clean-garbage:
+    desc: Clean up nixos previous generations gaarbage
+    cmds:
+      - sudo nix-collect-garbage -d
+
+  clean-store:
+    cmds:
+      - sudo nix-store --optimise

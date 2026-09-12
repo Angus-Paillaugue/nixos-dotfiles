@@ -14,6 +14,7 @@
       enable_audio_bell = "no";
       visual_bell = "no";
       allow_hyperlinks = "yes";
+      include = "$HOME/.config/kitty/themes/noctalia.conf";
     };
   };
 }

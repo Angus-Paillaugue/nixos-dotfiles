@@ -9,14 +9,13 @@ hl.config({
   },
 
   general = {
-    -- Gaps and border
     gaps_in = 4,
     gaps_out = 5,
     gaps_workspaces = 50,
     border_size = 1,
     resize_on_border = true,
     no_focus_fallback = true,
-    allow_tearing = true, -- This just allows the `immediate` window rule to work
+    allow_tearing = true,
     snap = {
       enabled = true,
       window_gap = 4,
@@ -27,7 +26,6 @@ hl.config({
 
   decoration = {
     -- 2 = circle, higher = squircle, 4 = very obvious squircle
-    -- Fuck clearly visible squircles. 100% Apple brainrot.
     rounding_power = 2.5,
     rounding = 18,
 
@@ -55,7 +53,6 @@ hl.config({
       render_power = 4,
       color = "rgba(00000010)"
     },
-    -- Dim
     dim_inactive = true,
     dim_strength = 0.025,
     dim_special = 0.07,
@@ -71,7 +68,6 @@ hl.config({
     preserve_split = true,
     smart_split = false,
     smart_resizing = false
-    -- precise_mouse_move = true,
   },
 
   input = {
@@ -159,8 +155,8 @@ hl.curve("standardDecel", {
   type = "bezier",
   points = { { 0, 0 }, { 0, 1 } }
 })
--- Configs
--- windows
+
+
 hl.animation({
   leaf = "windowsMove",
   enabled = true,
@@ -168,7 +164,6 @@ hl.animation({
   bezier = "emphasizedDecel",
   style = "slide"
 })
-
 hl.animation({
   leaf = "fade",
   enabled = true,
@@ -213,8 +208,6 @@ hl.animation({
   speed = 4.79,
   bezier = "easeOutQuint"
 })
-
--- layers
 hl.animation({
   leaf = "layers",
   enabled = true,
@@ -235,7 +228,6 @@ hl.animation({
   bezier = "linear",
   style = "fade"
 })
--- fade
 hl.animation({
   leaf = "fadeLayersIn",
   enabled = true,
@@ -248,7 +240,6 @@ hl.animation({
   speed = 1.39,
   bezier = "almostLinear"
 })
--- workspaces
 hl.animation({
   leaf = "workspaces",
   enabled = true,
@@ -270,7 +261,6 @@ hl.animation({
   bezier = "easeOutQuint",
   style = "slide"
 })
--- specialWorkspace
 hl.animation({
   leaf = "specialWorkspaceIn",
   enabled = true,

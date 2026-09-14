@@ -5,13 +5,46 @@ version: '3'
 tasks:
   home:
     desc: Rebuilds the home-manager config
-    summary: Rebuild a home configuration for a specific user. E.G. `task home -- angus`
-    cmd: home-manager switch --flake .#"{{index .CLI_ARGS_LIST 0}}"
+    summary: Rebuild a home configuration for the current user
+    vars:
+      USERNAME: 
+        sh: id -un
+      CORES:
+        sh: |
+          threads=$(nproc)
+          ram_gb=$(awk '/MemTotal/ { printf "%d", $2 / 1024 / 1024 }' /proc/meminfo)
+          ram_limit=$((ram_gb / 2))
+          cpu_limit=$((threads * 9 / 10))
+          cores=$((ram_limit < cpu_limit ? ram_limit : cpu_limit))
+          cores=$((cores < 2 ? 2 : cores))
+          echo "$cores"
+      MAX_JOBS:
+        sh: |
+          ram_gb=$(awk '/MemTotal/ { printf "%d", $2 / 1024 / 1024 }' /proc/meminfo)
+          if (( ram_gb >= 64 )); then
+            echo 3
+          elif (( ram_gb >= 32 )); then
+            echo 2
+          else
+            echo 1
+          fi
+    cmd: home-manager switch --max-jobs {{.MAX_JOBS}} --cores {{.CORES}} --flake .#{{.USERNAME}}
 
   system:
     desc: Rebuilds the NixOS system config
-    summary: Rebuild a system configuration for a specific user. E.G. `task home -- nixos`
-    cmd: sudo nixos-rebuild switch --flake .#"{{index .CLI_ARGS_LIST 0}}"
+    summary: Rebuild a system configuration for the current system
+    vars:
+      HOST:
+        sh: hostname
+    cmd: sudo nixos-rebuild switch --flake .#"{{.HOST}}"
+
+  update:
+    desc: Update this system
+    summary: Update all pinned inputs in flake, rebuild system current and current user home
+    cmds: 
+      - nix flake update
+      - task: system
+      - task: home
 
   clean:
     cmds:

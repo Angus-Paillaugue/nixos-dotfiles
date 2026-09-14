@@ -9,7 +9,7 @@ local function workspace_in_group(i)
 end
 
 
-hl.bind("SUPER_L", hl.dsp.exec_cmd(ipc .. "panel-toggle launcher"), { release = true })
+hl.bind("SUPER", hl.dsp.exec_cmd(ipc .. "panel-toggle launcher"), { release = true })
 hl.bind(mainMod .. "+ comma", hl.dsp.exec_cmd(ipc .. "settings-toggle"))
 hl.bind(mainMod .. "+ I", hl.dsp.exec_cmd(ipc .. "settings-toggle"))
 

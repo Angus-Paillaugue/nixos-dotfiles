@@ -35,6 +35,7 @@
     enable = true;
     configType = "lua";
     settings = { };
+    
     extraConfig = /* lua */ ''
       ${builtins.readFile ./execs.lua}
       ${builtins.readFile ./general.lua}

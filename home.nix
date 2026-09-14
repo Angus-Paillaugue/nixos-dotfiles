@@ -41,6 +41,7 @@
     inkscape
     virt-manager
     nerd-fonts.jetbrains-mono
+    nixd
   ];
 
   home.sessionVariables = {
@@ -50,7 +51,6 @@
 
   fonts.fontconfig.enable = true;
 
-  # nixGL.vulkan.enable = true;
   targets.genericLinux.nixGL.vulkan.enable = true;
 
   # Let Home Manager install and manage itself.

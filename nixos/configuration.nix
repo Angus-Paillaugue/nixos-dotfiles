@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     # Include the results of the hardware scan.
@@ -10,8 +10,27 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   services.power-profiles-daemon.enable = true;
-  hardware.bluetooth.enable = true;
+  hardware = {
+    bluetooth.enable = true;
+    graphics = {
+      enable = true;
+
+      extraPackages = with pkgs; [
+        intel-media-driver
+        vpl-gpu-rt
+      ];
+    };
+  };
   services.upower.enable = true;
+
+  environment = {
+    pathsToLink = [
+      "/share/hypr"
+    ];
+    sessionVariables = {
+      LIBVA_DRIVER_NAME = "iHD";
+    };
+  };
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -47,6 +66,7 @@
   # System-wide programs
   programs.hyprland.enable = true;
   programs.steam.enable = true;
+  programs.nix-ld.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -112,6 +132,6 @@
   # on your system were taken. It‘s perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
-    # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 }

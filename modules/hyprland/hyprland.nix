@@ -28,6 +28,9 @@
       size = 11;
     };
   };
+  # Trick to expose lua stubs directly
+  home.file.".local/share/hyprland-stubs".source = "${pkgs.hyprland}/share/hypr/stubs";
+
   wayland.windowManager.hyprland = {
     enable = true;
     configType = "lua";

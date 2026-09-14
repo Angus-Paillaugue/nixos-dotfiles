@@ -1,0 +1,12 @@
+{
+  "workspace": {
+    "library": [
+      "/home/angus/.local/share/hyprland-stubs"
+    ]
+  },
+  "diagnostics": {
+    "globals": [
+      "hl"
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env
 
 # Kill any other instances of this script to prevent conflicts
 for pid in $(pgrep -f "lid-monitor.sh"); do

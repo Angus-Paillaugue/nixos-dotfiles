@@ -5,13 +5,13 @@ version: '3'
 tasks:
   home:
     desc: Rebuilds the home-manager config
-    cmds:
-      - home-manager switch --flake ~/.config/home-manager#angus
+    summary: Rebuild a home configuration for a specific user. E.G. `task home -- angus`
+    cmd: home-manager switch --flake .#"{{index .CLI_ARGS_LIST 0}}"
 
   system:
     desc: Rebuilds the NixOS system config
-    cmds:
-      - sudo nixos-rebuild switch -I nixos-config=$HOME/.config/home-manager/nixos/configuration.nix
+    summary: Rebuild a system configuration for a specific user. E.G. `task home -- nixos`
+    cmd: sudo nixos-rebuild switch --flake .#"{{index .CLI_ARGS_LIST 0}}"
 
   clean:
     cmds:
@@ -20,9 +20,7 @@ tasks:
 
   clean-garbage:
     desc: Clean up nixos previous generations gaarbage
-    cmds:
-      - sudo nix-collect-garbage -d
+    cmd: sudo nix-collect-garbage -d
 
   clean-store:
-    cmds:
-      - sudo nix-store --optimise
+    cmd: sudo nix-store --optimise

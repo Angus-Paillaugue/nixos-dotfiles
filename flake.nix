@@ -1,5 +1,12 @@
 {
-  description = "Home Manager config for angus";
+  description = "My Nix Config";
+
+  nixConfig = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -21,7 +28,6 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       home-manager,
       zen-browser,
@@ -29,27 +35,35 @@
       hyprland,
       ...
     }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
     {
-      homeConfigurations.angus = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+      nixosConfigurations = {
+        nixos = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
 
-        modules = [
-          ./home.nix
-          zen-browser.homeModules.beta
-          noctalia.homeModules.default
-          {
-            wayland.windowManager.hyprland = {
-              enable = true;
-              package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-              portalPackage = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-            };
-          }
-        ];
+          modules = [
+            ./hosts/nixos/configuration.nix
+          ];
+        };
       };
+
+        homeConfigurations = {
+          angus = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.x86_64-linux;
+
+            modules = [
+              ./hosts/nixos/home.nix
+              zen-browser.homeModules.beta
+              noctalia.homeModules.default
+              {
+                wayland.windowManager.hyprland = {
+                  enable = true;
+                  package = hyprland.packages.${nixpkgs.legacyPackages.x86_64-linux.stdenv.hostPlatform.system}.hyprland;
+                  portalPackage = hyprland.packages.${nixpkgs.legacyPackages.x86_64-linux.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+                };
+              }
+            ];
+          };
+        };
     };
 
 }

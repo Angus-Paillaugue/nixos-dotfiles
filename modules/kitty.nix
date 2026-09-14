@@ -3,7 +3,7 @@
     enable = true;
 
     settings = {
-      font_familly = "JetbrainsMono Nerd Font";
+      font_family = "JetBrainsMono Nerd Font";
       font_size = 11.0;
       cursor_shape = "beam";
       cursor_trail = 1;
@@ -12,7 +12,6 @@
       shell = "fish";
       background_opacity = 0.8;
       enable_audio_bell = "no";
-      visual_bell = "no";
       allow_hyperlinks = "yes";
       include = "$HOME/.config/kitty/themes/noctalia.conf";
     };

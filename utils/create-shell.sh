@@ -9,10 +9,7 @@ shell_location="$here/shell.nix"
 
 function write_shell(){
   # $1 contents
-  local contents="$1"
-  cat <<EOF > "$shell_location"
-$contents
-EOF
+  echo "$1" > "$shell_location"
 }
 
 function set_up_java_shell() {

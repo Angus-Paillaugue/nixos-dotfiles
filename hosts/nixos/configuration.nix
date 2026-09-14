@@ -2,7 +2,7 @@
 {
   imports = [
     # Include the results of the hardware scan.
-    /etc/nixos/hardware-configuration.nix
+    ./hardware-configuration.nix
   ];
 
   # Bootloader.
@@ -67,6 +67,7 @@
   programs.hyprland.enable = true;
   programs.steam.enable = true;
   programs.nix-ld.enable = true;
+  programs.fish.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -87,12 +88,17 @@
     pulse.enable = true;
   };
 
+  # Docker
+  virtualisation.docker.enable = true;
+
   users.users.angus = {
     isNormalUser = true;
     description = "Angus";
+    shell = pkgs.fish;
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
   };
 
@@ -123,8 +129,8 @@
   nixpkgs.config.allowUnfree = true;
 
   nix.settings.experimental-features = [
-    "flakes"
     "nix-command"
+    "flakes"
   ];
 
   # This value determines the NixOS release from which the default

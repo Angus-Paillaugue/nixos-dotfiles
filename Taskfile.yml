@@ -2,13 +2,17 @@
 
 version: "3"
 
+vars:
+  HOST:
+    sh: hostname
+  USERNAME:
+    sh: id -un
+
 tasks:
   home:
     desc: Rebuilds the home-manager config
     summary: Rebuild a home configuration for the current user
     vars:
-      USERNAME:
-        sh: id -un
       CORES:
         sh: |
           threads=$(nproc)
@@ -33,9 +37,6 @@ tasks:
   system:
     desc: Rebuilds the NixOS system config
     summary: Rebuild a system configuration for the current system
-    vars:
-      HOST:
-        sh: hostname
     cmd: sudo nixos-rebuild switch --flake .#"{{.HOST}}"
 
   update:
@@ -45,6 +46,9 @@ tasks:
       - nix flake update
       - task: system
       - task: home
+
+  hardware:
+    cmd: sudo nixos-generate-config --dir ./hosts/{{.HOST}}
 
   clean:
     cmds:

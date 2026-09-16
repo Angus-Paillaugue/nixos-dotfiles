@@ -18,5 +18,7 @@
       name = "Sans";
       size = 11;
     };
+
+    gtk4.theme = null;
   };
 }

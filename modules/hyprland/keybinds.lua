@@ -4,8 +4,7 @@ local ipc = "noctalia msg "
 local function workspace_in_group(i)
   local curr = hl.get_active_workspace().id
   local workspaceGroupSize = 10
-  local newVal = math.floor((curr - 1) / workspaceGroupSize) * workspaceGroupSize + i
-  return newVal
+  return math.floor((curr - 1) / workspaceGroupSize) * workspaceGroupSize + i
 end
 
 

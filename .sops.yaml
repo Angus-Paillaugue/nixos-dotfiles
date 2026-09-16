@@ -1,0 +1,8 @@
+keys:
+  - &angus age1avjeyd5ppwv96ks3vfq0xyf6kpshaz5ekqx3cls6pzwj68p2ngcq5qmtt0
+
+creation_rules:
+  - path_regex: secrets/.*\.yaml$
+    key_groups:
+      - age:
+          - *angus

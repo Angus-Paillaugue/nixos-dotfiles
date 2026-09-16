@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 
-version: '3'
+version: "3"
 
 tasks:
   home:
     desc: Rebuilds the home-manager config
     summary: Rebuild a home configuration for the current user
     vars:
-      USERNAME: 
+      USERNAME:
         sh: id -un
       CORES:
         sh: |
@@ -41,7 +41,7 @@ tasks:
   update:
     desc: Update this system
     summary: Update all pinned inputs in flake, rebuild system current and current user home
-    cmds: 
+    cmds:
       - nix flake update
       - task: system
       - task: home

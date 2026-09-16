@@ -24,6 +24,7 @@
     };
     hyprland.url = "github:hyprwm/Hyprland";
     noctalia.url = "github:noctalia-dev/noctalia";
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs =
@@ -33,6 +34,7 @@
       zen-browser,
       noctalia,
       hyprland,
+      sops-nix,
       ...
     }:
     {
@@ -46,24 +48,26 @@
         };
       };
 
-        homeConfigurations = {
-          angus = home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      homeConfigurations = {
+        angus = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
 
-            modules = [
-              ./hosts/nixos/home.nix
-              zen-browser.homeModules.beta
-              noctalia.homeModules.default
-              {
-                wayland.windowManager.hyprland = {
-                  enable = true;
-                  package = hyprland.packages.${nixpkgs.legacyPackages.x86_64-linux.stdenv.hostPlatform.system}.hyprland;
-                  portalPackage = hyprland.packages.${nixpkgs.legacyPackages.x86_64-linux.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-                };
-              }
-            ];
-          };
+          modules = [
+            ./hosts/nixos/home.nix
+            zen-browser.homeModules.beta
+            noctalia.homeModules.default
+            sops-nix.homeManagerModules.sops
+            {
+              wayland.windowManager.hyprland = {
+                enable = true;
+                package =
+                  hyprland.packages.${nixpkgs.legacyPackages.x86_64-linux.stdenv.hostPlatform.system}.hyprland;
+                portalPackage =
+                  hyprland.packages.${nixpkgs.legacyPackages.x86_64-linux.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+              };
+            }
+          ];
         };
+      };
     };
-
 }

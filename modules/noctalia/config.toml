@@ -265,7 +265,7 @@ scroll_down = "panel-toggle control-center"
 
 [plugins]
 enabled = ["davemhammer/tailscale", "oldirtty/color_picker", "noctalia/translator"]
-auto_update = true # update every enabled git source on startup and every 6 hours
+auto_update = "all" # "all" | "official" | "none"; background git updates on startup and every 6 hours
 
 [widget.gap64]
 type = "spacer"
@@ -495,12 +495,12 @@ pipe_command         = ""                          # annotator/uploader, e.g. "s
 [calendar]
 enabled = true
 refresh_minutes = 15
+event_date_format = "%A %e %B"    # date format used for events
+event_time_format = "%H:%M"       # time format used for events
 
 [control_center.calendar]
 show_events_card = true
 show_week_numbers = false         # ISO 8601 week numbers in the month grid
-event_date_format = "%A %e %B"    # date format used for events
-event_time_format = "%H:%M"       # time format used for events
 
 [calendar.account.personal]
 name = "Personal"

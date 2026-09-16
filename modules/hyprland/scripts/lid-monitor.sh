@@ -2,9 +2,9 @@
 
 # Kill any other instances of this script to prevent conflicts
 for pid in $(pgrep -f "lid-monitor.sh"); do
-    if [ "$pid" != "$$" ]; then
-        kill "$pid"
-    fi
+  if [ "$pid" != "$$" ]; then
+    kill "$pid"
+  fi
 done
 
 LID_PATH="/proc/acpi/button/lid/LID0/state"

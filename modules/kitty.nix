@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   programs.kitty = {
     enable = true;
@@ -13,7 +14,7 @@
       background_opacity = 0.8;
       enable_audio_bell = "no";
       allow_hyperlinks = "yes";
-      include = "$HOME/.config/kitty/themes/noctalia.conf";
+      include = "${config.home.homeDirectory}/.config/kitty/themes/noctalia.conf";
     };
   };
 }

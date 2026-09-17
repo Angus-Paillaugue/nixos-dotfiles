@@ -47,6 +47,10 @@
     sops
     age
     ssh-to-age
+    eog
+    xar
+    qemu
+    quickemu
   ];
 
   home.sessionVariables = {
@@ -54,22 +58,31 @@
     NIXOS_FORCE_FONTCONFIG_DIRS = "1";
   };
 
-  programs.ssh = {
-    enable = true;
-    enableDefaultConfig = false;
-    settings = {
-      "Host server" = {
-        HostName = "192.168.0.3";
-        User = "root";
-        IdentityFile = "~/.ssh/id_ed25519";
+  programs = {
+    ssh = {
+      enable = true;
+      enableDefaultConfig = false;
+      settings = {
+        "Host server" = {
+          HostName = "192.168.0.3";
+          User = "root";
+          IdentityFile = "~/.ssh/id_ed25519";
+        };
       };
+    };
+
+    # Let Home Manager install and manage itself.
+    home-manager.enable = true;
+  };
+
+  dconf.settings = {
+    "org/virt-manager/virt-manager/connections" = {
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
   };
 
   fonts.fontconfig.enable = true;
 
   targets.genericLinux.nixGL.vulkan.enable = true;
-
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
 }

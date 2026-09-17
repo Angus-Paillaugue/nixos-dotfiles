@@ -163,3 +163,14 @@ hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd("kitty -1 fish -c btop"))
 -- Others
 hl.bind(mainMod .. "+ Space", hl.dsp.exec_cmd("$HOME/.config/home-manager/modules/hyprland/scripts/toggle-layout.sh"))
 hl.bind(mainMod .. "+ F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
+
+hl.define_submap("virtual-machine", function()
+  hl.bind("SUPER + ALT + F1", function()
+    local currentsubmap = hl.get_current_submap()
+    if currentsubmap == "virtual-machine" then
+      hl.dispatch(hl.dsp.submap("reset"))
+    elseif currentsubmap == "" then
+      hl.dispatch(hl.dsp.submap("virtual-machine"))
+    end
+  end, { submap_universal = true })
+end)

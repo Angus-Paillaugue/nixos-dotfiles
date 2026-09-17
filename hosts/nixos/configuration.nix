@@ -30,6 +30,9 @@
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
     };
+    systemPackages = [
+      pkgs.qemu
+    ];
   };
 
   networking.hostName = "nixos"; # Define your hostname.
@@ -88,8 +91,15 @@
     pulse.enable = true;
   };
 
-  # Docker
-  virtualisation.docker.enable = true;
+  virtualisation = {
+    docker.enable = true;
+    libvirtd = {
+      enable = true;
+      qemu = {
+        swtpm.enable = true;
+      };
+    };
+  };
 
   users.users.angus = {
     isNormalUser = true;
@@ -99,6 +109,7 @@
       "networkmanager"
       "wheel"
       "docker"
+      "libvirtd"
     ];
   };
 

@@ -37,7 +37,7 @@ pure_black_dark = false             # anchor dark surfaces to true black (OLED);
 enable_builtin_templates = true
 builtin_ids = [ "btop", "gtk3", "gtk4", "hyprland", "kitty", "qt", "starship" ]
 enable_community_templates = true
-community_ids = [ "zen-browser", "zed", "fastfetch", "bat", "steam" ]     # fetched from api.noctalia.dev/templates, cached locally
+community_ids = [ "zen-browser", "fastfetch", "bat", "steam" ]     # fetched from api.noctalia.dev/templates, cached locally
 
 # ── Backdrop ──────────────────────────────────────────────────────────────────
 
@@ -537,3 +537,7 @@ type = "caldav"
 username = "angus"
 color = "#f8e45c"
 calendars = ["contact_birthdays-2025-09-09"]
+
+[theme.templates.user.zed]
+input_path = "$XDG_CONFIG_HOME/home-manager/modules/noctalia/templates/zed.json"
+output_path = "$XDG_CONFIG_HOME/zed/themes/noctalia.json"

@@ -51,6 +51,9 @@
     xar
     qemu
     quickemu
+    libnotify
+    vorta
+    less
   ];
 
   home.sessionVariables = {

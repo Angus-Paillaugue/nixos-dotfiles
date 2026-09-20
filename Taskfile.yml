@@ -56,7 +56,7 @@ tasks:
       - task: clean-store
 
   clean-garbage:
-    desc: Clean up nixos previous generations gaarbage
+    desc: Clean up all nixos previous generations gaarbage
     cmd: sudo nix-collect-garbage -d
 
   clean-store:

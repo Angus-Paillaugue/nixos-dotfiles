@@ -50,19 +50,24 @@ in
   systemd.user = {
     timers."backup" = {
       Install.WantedBy = [ "timers.target" ];
-      Unit.Description = "Timer for backup service";
+      Unit = {
+        Description = "Timer for backup service";
+        After = [ "sops-nix.service" ];
+        Wants = [ "sops-nix.service" ];
+      };
       Timer = {
         Unit = "backup.service";
         OnCalendar = "daily";
         Persistent = true;
+        RandomizedDelaySec = "15m";
       };
     };
 
     services."backup" = {
       Unit = {
         Description = "Daily Backup Script";
-        Wants = [ "network-online.target" ];
-        After = [ "network-online.target" ];
+        Wants = [ "network-online.target" "sops-nix.service" ];
+        After = [ "network-online.target" "sops-nix.service" ];
       };
       Service = {
         StandardOutput = "journal";

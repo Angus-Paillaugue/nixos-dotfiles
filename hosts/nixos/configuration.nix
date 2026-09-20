@@ -66,6 +66,10 @@
     steam.enable = true;
     nix-ld.enable = true;
     fish.enable = true;
+    git = {
+      enable = true;
+      config.safe.directory = [ "/home/angus/.config/home-manager" ];
+    };
   };
 
   security.rtkit.enable = true;
@@ -146,20 +150,66 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      substituters = [ "https://hyprland.cachix.org" ];
+      trusted-substituters = [ "https://hyprland.cachix.org" ];
+      trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
+    };
+
+    # Garbage collection
+    gc = {
+      automatic = true;
+      persistent = true;
+      dates = "weekly";
+      options = "--delete-older-than 10d";
+    };
+  };
+
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = false;
+    flake = "/home/angus/.config/home-manager#${config.networking.hostName}";
+    flags = [
+      "--print-build-logs"
+      "--commit-lock-file"
     ];
-    substituters = [ "https://hyprland.cachix.org" ];
-    trusted-substituters = [ "https://hyprland.cachix.org" ];
-    trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
-    # Required so non-root users are allowed to use the above substituter/keys.
-    # Use @wheel for all sudo users, or list your username explicitly.
-    trusted-users = [
-      "root"
-      "@wheel"
-    ];
+    dates = "daily";
+    persistent = true;
+    randomizedDelaySec = "45min";
+  };
+
+  systemd.services = {
+    flake-update = {
+      unitConfig = {
+        Description = "Update flake inputs";
+        StartLimitIntervalSec = 300;
+        StartLimitBurst = 5;
+        Wants = [ "network-online.target" ];
+        After = [ "network-online.target" ];
+      };
+      serviceConfig = {
+        ExecStart = "${pkgs.nix}/bin/nix flake update --commit-lock-file --flake /home/angus/.config/home-manager";
+        Restart = "on-failure";
+        RestartSec = "30";
+        Type = "oneshot"; # Ensure that it finishes before starting nixos-upgrade
+        User = "angus";
+      };
+      before = [ "nixos-upgrade.service" ];
+      path = [
+        pkgs.nix
+        pkgs.git
+      ];
+    };
   };
 
   # This value determines the NixOS release from which the default

@@ -125,6 +125,21 @@
     ];
   };
 
+  # The daily update runs as a systemd --user service, so sudo must not try
+  # to prompt for a password. Keep the passwordless rule limited to the
+  # rebuild command; all other sudo commands retain normal authentication.
+  security.sudo.extraRules = [
+    {
+      users = [ "angus" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/nixos-rebuild";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
+
   networking.nftables.enable = true;
   networking.firewall = {
     enable = true;
@@ -172,43 +187,6 @@
       persistent = true;
       dates = "weekly";
       options = "--delete-older-than 10d";
-    };
-  };
-
-  system.autoUpgrade = {
-    enable = true;
-    allowReboot = false;
-    flake = "/home/angus/.config/home-manager#${config.networking.hostName}";
-    flags = [
-      "--print-build-logs"
-      "--commit-lock-file"
-    ];
-    dates = "daily";
-    persistent = true;
-    randomizedDelaySec = "45min";
-  };
-
-  systemd.services = {
-    flake-update = {
-      unitConfig = {
-        Description = "Update flake inputs";
-        StartLimitIntervalSec = 300;
-        StartLimitBurst = 5;
-        Wants = [ "network-online.target" ];
-        After = [ "network-online.target" ];
-      };
-      serviceConfig = {
-        ExecStart = "${pkgs.nix}/bin/nix flake update --commit-lock-file --flake /home/angus/.config/home-manager";
-        Restart = "on-failure";
-        RestartSec = "30";
-        Type = "oneshot"; # Ensure that it finishes before starting nixos-upgrade
-        User = "angus";
-      };
-      before = [ "nixos-upgrade.service" ];
-      path = [
-        pkgs.nix
-        pkgs.git
-      ];
     };
   };
 

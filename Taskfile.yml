@@ -37,7 +37,9 @@ tasks:
   system:
     desc: Rebuilds the NixOS system config
     summary: Rebuild a system configuration for the current system
-    cmd: sudo nixos-rebuild switch --flake .#"{{.HOST}}"
+    # This task is also called by the non-interactive user systemd service.
+    # The sudo rule for this command is declared in the NixOS configuration.
+    cmd: /run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild switch --flake .#{{.HOST}}
 
   update:
     desc: Update this system

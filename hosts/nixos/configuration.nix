@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 {
   imports = [
     # Include the results of the hardware scan.
@@ -125,6 +125,14 @@
     ];
   };
 
+  home-manager = {
+    extraSpecialArgs = {
+      inherit inputs;
+      hostName = config.networking.hostName;
+    };
+    users."angus" = import ./home.nix;
+  };
+
   # The daily update runs as a systemd --user service, so sudo must not try
   # to prompt for a password. Keep the passwordless rule limited to the
   # rebuild command; all other sudo commands retain normal authentication.
@@ -186,7 +194,7 @@
       automatic = true;
       persistent = true;
       dates = "weekly";
-      options = "--delete-older-than 10d";
+      options = "--delete-older-than 7d";
     };
   };
 

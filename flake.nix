@@ -1,12 +1,10 @@
 {
   description = "My Nix Config";
 
-  nixConfig = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-  };
+  nixConfig.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -30,42 +28,17 @@
   outputs =
     {
       nixpkgs,
-      home-manager,
-      zen-browser,
-      noctalia,
-      hyprland,
-      sops-nix,
       ...
-    }:
+    }@inputs:
     {
       nixosConfigurations = {
         nixos = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
 
           modules = [
             ./hosts/nixos/configuration.nix
-          ];
-        };
-      };
-
-      homeConfigurations = {
-        angus = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-
-          modules = [
-            ./hosts/nixos/home.nix
-            zen-browser.homeModules.beta
-            noctalia.homeModules.default
-            sops-nix.homeManagerModules.sops
-            {
-              wayland.windowManager.hyprland = {
-                enable = true;
-                package =
-                  hyprland.packages.${nixpkgs.legacyPackages.x86_64-linux.stdenv.hostPlatform.system}.hyprland;
-                portalPackage =
-                  hyprland.packages.${nixpkgs.legacyPackages.x86_64-linux.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-              };
-            }
+            inputs.home-manager.nixosModules.default
           ];
         };
       };

@@ -1,12 +1,17 @@
-{ pkgs, config, ... }:
-
+{
+  pkgs,
+  lib,
+  config,
+  hostName,
+  ...
+}:
 let
   mkBackupScript =
-    name: service_name: target: to_backup:
+    name: service_name: target: toBackup:
     pkgs.writeShellScript "${name}-backup" ''
       script_name="Backup manager"
       to_backup=(
-        ${pkgs.lib.concatMapStringsSep "\n\t" pkgs.lib.escapeShellArg to_backup}
+        ${pkgs.lib.concatMapStringsSep "\n\t" pkgs.lib.escapeShellArg toBackup}
       )
       compression="zstd,1"
       commonExcludes=(
@@ -47,38 +52,62 @@ let
     '';
 in
 {
-  systemd.user = {
-    timers."backup" = {
-      Install.WantedBy = [ "timers.target" ];
-      Unit = {
-        Description = "Timer for backup service";
-        After = [ "sops-nix.service" ];
-        Wants = [ "sops-nix.service" ];
-      };
-      Timer = {
-        Unit = "backup.service";
-        OnCalendar = "daily";
-        Persistent = true;
-        RandomizedDelaySec = "15m";
-      };
+  options.backup = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable gh CLI";
     };
-
-    services."backup" = {
-      Unit = {
-        Description = "Daily Backup Script";
-        Wants = [ "network-online.target" "sops-nix.service" ];
-        After = [ "network-online.target" "sops-nix.service" ];
+    target = lib.mkOption {
+      type = lib.types.str;
+      description = "Target for backup";
+      example = "backup@host:/path/to/backup";
+      default = "backup@host:/path/to/backup";
+    };
+    toBackup = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      description = "List of paths to backup";
+      example = [
+        "/home/user/Documents"
+        "/home/user/Pictures"
+      ];
+      default = [ ];
+    };
+  };
+  config = lib.mkIf config.backup.enable {
+    systemd.user = {
+      timers."backup" = {
+        Install.WantedBy = [ "timers.target" ];
+        Unit = {
+          Description = "Timer for backup service";
+          After = [ "sops-nix.service" ];
+          Wants = [ "sops-nix.service" ];
+        };
+        Timer = {
+          Unit = "backup.service";
+          OnCalendar = "daily";
+          Persistent = true;
+          RandomizedDelaySec = "15m";
+        };
       };
-      Service = {
-        StandardOutput = "journal";
-        StandardError = "journal";
-        ExecStart = "${mkBackupScript "nixos" "backup" "root@192.168.0.3:/mnt/storage/backups/nixos" [
-          "${config.home.homeDirectory}/Downloads"
-          "${config.home.homeDirectory}/Videos"
-          "${config.home.homeDirectory}/Documents"
-          "${config.home.homeDirectory}/Pictures"
-          "${config.home.homeDirectory}/.config/sops/age/keys.txt"
-        ]}";
+
+      services."backup" = {
+        Unit = {
+          Description = "Daily Backup Script";
+          Wants = [
+            "network-online.target"
+            "sops-nix.service"
+          ];
+          After = [
+            "network-online.target"
+            "sops-nix.service"
+          ];
+        };
+        Service = {
+          StandardOutput = "journal";
+          StandardError = "journal";
+          ExecStart = mkBackupScript hostName "backup" config.backup.target config.backup.toBackup;
+        };
       };
     };
   };

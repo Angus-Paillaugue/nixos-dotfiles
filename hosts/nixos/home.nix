@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, hostName, ... }:
 
 {
   home.username = "angus";
@@ -9,6 +9,26 @@
   imports = lib.filter (n: lib.strings.hasSuffix ".nix" n) (
     lib.filesystem.listFilesRecursive ../../modules
   );
+
+  # Modules
+  zen.enable = true;
+  zed.enable = true;
+  kitty.enable = true;
+  gh.enable = true;
+  noctalia.enable = true;
+  hyprland.enable = true;
+  update.enable = true;
+  backup = {
+    enable = true;
+    target = "root@192.168.0.3:/mnt/storage/backups/${hostName}";
+    toBackup = [
+      "${config.home.homeDirectory}/Downloads"
+      "${config.home.homeDirectory}/Videos"
+      "${config.home.homeDirectory}/Documents"
+      "${config.home.homeDirectory}/Pictures"
+      "${config.home.homeDirectory}/.config/sops/age/keys.txt"
+    ];
+  };
 
   home.packages = with pkgs; [
     nil
@@ -54,6 +74,7 @@
     libnotify
     vorta
     less
+    yt-dlp
   ];
 
   home.sessionVariables = {
@@ -88,4 +109,12 @@
   fonts.fontconfig.enable = true;
 
   targets.genericLinux.nixGL.vulkan.enable = true;
+
+  programs.git = {
+    enable = true;
+    settings.user = {
+      name = "Angus-Paillaugue";
+      email = "angus@paillaugue.fr";
+    };
+  };
 }

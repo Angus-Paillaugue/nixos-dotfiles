@@ -1,5 +1,4 @@
 ```sh
 task hardware
-task system
-task home
+task switch
 ```

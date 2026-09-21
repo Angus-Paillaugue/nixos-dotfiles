@@ -5,6 +5,26 @@ version: "3"
 vars:
   HOST:
     sh: hostname
+  CORES:
+    sh: |
+      threads=$(nproc)
+      ram_gb=$(awk '/MemTotal/ { printf "%d", $2 / 1024 / 1024 }' /proc/meminfo)
+      ram_limit=$((ram_gb / 2))
+      cpu_limit=$((threads * 9 / 10))
+      cores=$((ram_limit < cpu_limit ? ram_limit : cpu_limit))
+      cores=$((cores < 2 ? 2 : cores))
+      echo "$cores"
+  MAX_JOBS:
+    sh: |
+      ram_gb=$(awk '/MemTotal/ { printf "%d", $2 / 1024 / 1024 }' /proc/meminfo)
+      if (( ram_gb >= 64 )); then
+        echo 3
+      elif (( ram_gb >= 32 )); then
+        echo 2
+      else
+        echo 1
+      fi
+
 
 tasks:
   switch:
@@ -12,7 +32,7 @@ tasks:
     summary: Rebuild a system configuration for the current system
     # This task is also called by the non-interactive user systemd service.
     # The sudo rule for this command is declared in the NixOS configuration.
-    cmd: /run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild switch --flake .#{{.HOST}}
+    cmd: /run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild switch --flake .#{{.HOST}} --max-jobs {{.MAX_JOBS}} --cores {{.CORES}}
 
   update:
     desc: Update this system

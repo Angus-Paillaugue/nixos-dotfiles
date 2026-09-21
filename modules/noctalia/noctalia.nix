@@ -1,4 +1,10 @@
-{ lib, config, inputs, ... }: {
+{
+  lib,
+  config,
+  inputs,
+  ...
+}:
+{
   imports = [
     inputs.noctalia.homeModules.default
   ];
@@ -10,6 +16,7 @@
       description = "Enable Noctalia";
     };
   };
+
   config = lib.mkIf config.noctalia.enable {
     programs.noctalia = {
       enable = true;

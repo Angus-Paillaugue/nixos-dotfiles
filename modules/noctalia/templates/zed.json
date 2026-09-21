@@ -235,7 +235,6 @@
           "variable.special": {
             "color": "#79B8FFFF"
           },
-          
           "emphasis": {
             "color": "{{colors.primary.dark.hex}}",
             "font_style": "italic",
@@ -766,7 +765,6 @@
           "variable.special": {
             "color": "#79B8FFFF"
           },
-          
           "emphasis": {
             "color": "{{colors.primary.dark.hex}}",
             "font_style": "italic",

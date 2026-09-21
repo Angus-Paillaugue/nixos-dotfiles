@@ -74,6 +74,7 @@ in
       default = [ ];
     };
   };
+
   config = lib.mkIf config.backup.enable {
     systemd.user = {
       timers."backup" = {

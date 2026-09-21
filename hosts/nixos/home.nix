@@ -61,7 +61,6 @@
     nwg-look
     inkscape
     virt-manager
-    nerd-fonts.jetbrains-mono
     nixd
     openssl
     sops
@@ -116,5 +115,19 @@
       name = "Angus-Paillaugue";
       email = "angus@paillaugue.fr";
     };
+  };
+
+  sops.secrets = {
+    ssh_private_key = {
+      sopsFile = ../../secrets/ssh.yaml;
+      path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+    };
+
+    ssh_public_key = {
+      sopsFile = ../../secrets/ssh.yaml;
+      path = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
+    };
+
+    borg_password.sopsFile = ../../secrets/borg.yaml;
   };
 }

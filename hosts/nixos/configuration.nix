@@ -29,9 +29,9 @@
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
     };
-    systemPackages = [
-      pkgs.qemu
-      pkgs.borgbackup
+    systemPackages = with pkgs; [
+      qemu
+      borgbackup
     ];
   };
 

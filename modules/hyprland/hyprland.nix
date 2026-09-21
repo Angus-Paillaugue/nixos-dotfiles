@@ -13,6 +13,7 @@
       description = "Enable Hyprland";
     };
   };
+
   config = lib.mkIf config.hyprland.enable {
     home = {
       pointerCursor = {
@@ -29,8 +30,7 @@
 
     wayland.windowManager.hyprland = {
       enable = true;
-      package =
-        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
       portalPackage =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
       configType = "lua";

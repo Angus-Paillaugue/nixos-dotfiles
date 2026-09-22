@@ -31,11 +31,9 @@ let
       }
       trap on_exit EXIT
 
-      echo "conf=${config_dir}"
-      echo "user=${user}"
       cd "${config_dir}" || exit 1
       ${pkgs.libnotify}/bin/notify-send -a "$script_name" "Starting system update..."
-      ${pkgs.go-task}/bin/task switch
+      ${pkgs.go-task}/bin/task update
       # Commit update to git and push to remote
       ${pkgs.git}/bin/git commit -am "chore: Update ($(date +%Y/%m/%d-%H:%M:%S))"
       ${pkgs.git}/bin/git push origin main

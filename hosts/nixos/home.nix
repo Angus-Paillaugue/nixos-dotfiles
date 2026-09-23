@@ -74,6 +74,8 @@
     vorta
     less
     yt-dlp
+    beekeeper-studio
+    gnupg
   ];
 
   home.sessionVariables = {

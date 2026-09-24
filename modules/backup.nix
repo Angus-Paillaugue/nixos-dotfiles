@@ -98,7 +98,8 @@ in
           Wants = [
             "network-online.target"
             "sops-nix.service"
-          ];
+          ]
+          ++ (if config.update.enable then [ "update.service" ] else [ ]);
           After = [
             "network-online.target"
             "sops-nix.service"

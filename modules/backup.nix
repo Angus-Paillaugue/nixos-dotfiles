@@ -56,7 +56,7 @@ in
     enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Enable gh CLI";
+      description = "Enable backup service";
     };
     target = lib.mkOption {
       type = lib.types.str;
@@ -102,7 +102,8 @@ in
           After = [
             "network-online.target"
             "sops-nix.service"
-          ];
+          ]
+          ++ (if config.update.enable then [ "update.service" ] else [ ]);
         };
         Service = {
           StandardOutput = "journal";

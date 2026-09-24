@@ -107,6 +107,7 @@ in
           ++ (if config.update.enable then [ "update.service" ] else [ ]);
         };
         Service = {
+          Type = "oneshot";
           StandardOutput = "journal";
           StandardError = "journal";
           ExecStart = mkBackupScript hostName "backup" config.backup.target config.backup.toBackup;

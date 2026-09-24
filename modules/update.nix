@@ -76,6 +76,7 @@ in
           After = [ "network-online.target" ];
         };
         Service = {
+          Type = "oneshot";
           StandardOutput = "journal";
           StandardError = "journal";
           Environment = [

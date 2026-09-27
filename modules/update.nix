@@ -11,6 +11,11 @@ let
     pkgs.writeShellScript "update-script" ''
       set -euo pipefail
       script_name="System update"
+      log_file="$(mktemp -t update-XXXXXX.log)"
+
+      function log() {
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$log_file"
+      }
 
       on_exit() {
         status=$?
@@ -23,7 +28,7 @@ let
             "System update failed (exit status $status)" \
             -A "See logs")
           if [ "$resp" = "0" ]; then
-            ${pkgs.kitty}/bin/kitty --hold bash -c "journalctl -xb --user-unit=update.service -n 50 --no-pager | bat -l log"
+            ${pkgs.kitty}/bin/kitty --hold bash -c "bat -l log $log_file"
           fi
         fi
 
@@ -32,11 +37,16 @@ let
       trap on_exit EXIT
 
       cd "${config_dir}" || exit 1
+      log "Starting system update..."
       ${pkgs.libnotify}/bin/notify-send -a "$script_name" "Starting system update..."
-      ${pkgs.go-task}/bin/task update
+      log "Running update task..."
+      ${pkgs.go-task}/bin/task update > "$log_file" 2>&1
       # Commit update to git and push to remote
-      ${pkgs.git}/bin/git commit -am "chore: Update ($(date +%Y/%m/%d-%H:%M:%S))"
-      ${pkgs.git}/bin/git push origin main
+      log "Committing update to git..."
+      ${pkgs.git}/bin/git commit -am "chore: Update ($(date +%Y/%m/%d-%H:%M:%S))" > "$log_file" 2>&1
+      log "Pushing update to remote..."
+      ${pkgs.git}/bin/git push origin main > "$log_file" 2>&1
+      log "System update finished successfully."
       ${pkgs.libnotify}/bin/notify-send -a "$script_name" "Finished system update"
     '';
 in

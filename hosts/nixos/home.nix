@@ -1,10 +1,24 @@
-{ pkgs, lib, config, hostName, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  hostName,
+  inputs,
+  ...
+}:
 
 {
   home.username = "angus";
   home.homeDirectory = "/home/angus";
   home.stateVersion = "25.11";
-  nixpkgs.config.allowUnfree = true;
+
+  nixpkgs = {
+    overlays = [
+      inputs.self.overlays.unstable-packages
+    ];
+
+    config.allowUnfree = true;
+  };
 
   imports = lib.filter (n: lib.strings.hasSuffix ".nix" n) (
     lib.filesystem.listFilesRecursive ../../modules
@@ -40,7 +54,6 @@
     nerd-fonts.jetbrains-mono
     google-fonts
     fnm
-    bun
     nwg-displays
     jq
     libreoffice
@@ -55,7 +68,7 @@
     eza
     bat
     go-task
-    bun
+    unstablePkgs.bun
     moonlight-qt
     nwg-displays
     nwg-look
@@ -102,8 +115,8 @@
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = ["qemu:///system"];
-      uris = ["qemu:///system"];
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
     };
   };
 
@@ -116,6 +129,9 @@
     settings.user = {
       name = "Angus-Paillaugue";
       email = "angus@paillaugue.fr";
+    };
+    settings = {
+      init.defaultBranch = "main";
     };
   };
 

@@ -23,6 +23,7 @@
       defaultEditor = true;
       extensions = [
         "html"
+        "git-firefly"
         "toml"
         "make"
         "lua"
@@ -31,6 +32,7 @@
         "jetbrains-new-ui-icons"
         "fish"
         "comment"
+        "dockerfile"
       ];
       userKeymaps = [
         {

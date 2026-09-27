@@ -1,4 +1,9 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
     # Include the results of the hardware scan.
@@ -170,8 +175,13 @@
   systemd.network.wait-online.enable = false;
   boot.initrd.systemd.network.wait-online.enable = false;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    overlays = [
+      inputs.self.overlays.unstable-packages
+    ];
+
+    config.allowUnfree = true;
+  };
 
   nix = {
     settings = {

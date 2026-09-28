@@ -14,7 +14,7 @@ let
       log_file="$(mktemp -t update-XXXXXX.log)"
 
       function log() {
-        echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$log_file"
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" >> "$log_file"
       }
 
       on_exit() {

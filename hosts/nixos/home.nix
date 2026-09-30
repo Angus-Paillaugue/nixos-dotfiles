@@ -15,7 +15,6 @@
   nixpkgs = {
     overlays = [
       inputs.self.overlays.unstable-packages
-      inputs.self.overlays.impasto
     ];
 
     config.allowUnfree = true;

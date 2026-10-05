@@ -32,6 +32,7 @@
   noctalia.enable = true;
   hyprland.enable = true;
   update.enable = true;
+  syncthing.enable = true;
   backup = {
     enable = true;
     target = "root@192.168.0.3:/mnt/storage/backups/${hostName}";

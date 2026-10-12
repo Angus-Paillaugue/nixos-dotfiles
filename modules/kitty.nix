@@ -23,6 +23,7 @@
         enable_audio_bell = "no";
         allow_hyperlinks = "yes";
         include = lib.mkIf config.noctalia.enable "${config.home.homeDirectory}/.config/kitty/themes/noctalia.conf";
+        remember_window_size = "no";
       };
     };
   };

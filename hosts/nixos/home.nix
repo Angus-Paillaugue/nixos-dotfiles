@@ -46,57 +46,62 @@
     ];
   };
 
-  home.packages = with pkgs; [
-    nil
-    nixfmt
-    btop
-    bibata-cursors
-    adw-gtk3
-    nautilus
-    nerd-fonts.jetbrains-mono
-    google-fonts
-    fnm
-    nwg-displays
-    jq
-    libreoffice
-    prismlauncher
-    remmina
-    vlc
-    curl
-    wget
-    tree
-    bat
-    gnumake
-    eza
-    bat
-    go-task
-    unstablePkgs.bun
-    moonlight-qt
-    nwg-displays
-    nwg-look
-    inkscape
-    virt-manager
-    nixd
-    openssl
-    sops
-    age
-    ssh-to-age
-    eog
-    xar
-    qemu
-    quickemu
-    libnotify
-    vorta
-    less
-    yt-dlp
-    beekeeper-studio
-    gnupg
-  ];
 
-  home.sessionVariables = {
+  home = {
+    packages = with pkgs; [
+      nil
+      nixfmt
+      btop
+      bibata-cursors
+      adw-gtk3
+      nautilus
+      nerd-fonts.jetbrains-mono
+      google-fonts
+      fnm
+      nwg-displays
+      jq
+      libreoffice
+      prismlauncher
+      remmina
+      vlc
+      curl
+      wget
+      tree
+      bat
+      gnumake
+      eza
+      bat
+      go-task
+      unstablePkgs.bun
+      moonlight-qt
+      nwg-displays
+      nwg-look
+      inkscape
+      virt-manager
+      nixd
+      openssl
+      sops
+      age
+      ssh-to-age
+      eog
+      xar
+      qemu
+      quickemu
+      libnotify
+      vorta
+      less
+      yt-dlp
+      beekeeper-studio
+      gnupg
+      opentofu
+    ];
+    
+    sessionVariables = {
     NIXOS_OZONE_WL = "1";
     NIXOS_FORCE_FONTCONFIG_DIRS = "1";
   };
+  };
+
 
   programs = {
     ssh = {

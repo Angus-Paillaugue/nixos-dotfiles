@@ -46,7 +46,6 @@
     ];
   };
 
-
   home = {
     packages = with pkgs; [
       nil
@@ -94,14 +93,16 @@
       beekeeper-studio
       gnupg
       opentofu
+      hyprpicker
+      bruno
+      unstablePkgs.gccNGPackages.libstdcxx
     ];
-    
-    sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    NIXOS_FORCE_FONTCONFIG_DIRS = "1";
-  };
-  };
 
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      NIXOS_FORCE_FONTCONFIG_DIRS = "1";
+    };
+  };
 
   programs = {
     ssh = {

@@ -31,6 +31,10 @@
         home-manager.follows = "home-manager";
       };
     };
+    helium = {
+      url = "github:AlvaroParker/helium-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hyprland.url = "github:hyprwm/Hyprland";
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
     sops-nix.url = "github:Mic92/sops-nix";

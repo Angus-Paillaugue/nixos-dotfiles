@@ -95,7 +95,6 @@
       opentofu
       hyprpicker
       bruno
-      unstablePkgs.gccNGPackages.libstdcxx
     ];
 
     sessionVariables = {

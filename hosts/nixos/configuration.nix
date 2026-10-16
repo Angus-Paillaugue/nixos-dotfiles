@@ -33,6 +33,7 @@
     ];
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
+      LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
     };
     systemPackages = with pkgs; [
       qemu
@@ -69,7 +70,12 @@
   programs = {
     hyprland.enable = true;
     steam.enable = true;
-    nix-ld.enable = true;
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+        stdenv.cc.cc.lib
+      ];
+    };
     fish.enable = true;
     git = {
       enable = true;

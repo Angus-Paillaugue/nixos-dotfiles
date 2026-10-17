@@ -3,9 +3,8 @@
 version: "3"
 
 vars:
-  DEFAULT_HOST:
+  HOST:
     sh: hostname
-  WANTED_HOST: '{{coalesce .HOST .DEFAULT_HOST}}'
   CORES:
     sh: |
       threads=$(nproc)
@@ -33,7 +32,7 @@ tasks:
     summary: Rebuild a system configuration for the current system
     # This task is also called by the non-interactive user systemd service.
     # The sudo rule for this command is declared in the NixOS configuration.
-    cmd: /run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild switch --flake .#{{.WANTED_HOST}} --max-jobs {{.MAX_JOBS}} --cores {{.CORES}} --accept-flake-config
+    cmd: /run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild switch --flake .#{{.HOST}} --max-jobs {{.MAX_JOBS}} --cores {{.CORES}} --accept-flake-config
 
   update:
     desc: Update this system
@@ -43,7 +42,7 @@ tasks:
       - task: switch
 
   hardware:
-    cmd: sudo nixos-generate-config --dir ./hosts/{{.WANTED_HOST}}
+    cmd: sudo nixos-generate-config --dir ./hosts/{{.HOST}}
 
   clean:
     cmds:

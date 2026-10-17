@@ -12,7 +12,7 @@
 
   boot = {
     loader = {
-      grup = {
+      grub = {
         enable = true;
         device = "/dev/sda";
         useOSProber = true;

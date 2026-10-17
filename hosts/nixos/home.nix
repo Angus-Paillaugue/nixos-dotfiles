@@ -143,12 +143,12 @@
   };
 
   sops.secrets = {
-    ssh_private_key = {
+    "nixos/private" = {
       sopsFile = ../../secrets/ssh.yaml;
       path = "${config.home.homeDirectory}/.ssh/id_ed25519";
     };
 
-    ssh_public_key = {
+    "nixos/public" = {
       sopsFile = ../../secrets/ssh.yaml;
       path = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
     };

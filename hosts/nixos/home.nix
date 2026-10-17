@@ -42,6 +42,7 @@
       "${config.home.homeDirectory}/Videos"
       "${config.home.homeDirectory}/Documents"
       "${config.home.homeDirectory}/Pictures"
+      "${config.home.homeDirectory}/Music"
       "${config.home.homeDirectory}/.config/sops/age/keys.txt"
     ];
   };

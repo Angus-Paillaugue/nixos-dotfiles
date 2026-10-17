@@ -4,11 +4,9 @@
   nixConfig = {
     extra-substituters = [
       "https://noctalia.cachix.org"
-      "https://hyprland.cachix.org"
     ];
     extra-trusted-public-keys = [
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
     ];
     experimental-features = [
       "nix-command"
@@ -35,7 +33,6 @@
       url = "github:AlvaroParker/helium-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland.url = "github:hyprwm/Hyprland";
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
     sops-nix.url = "github:Mic92/sops-nix";
   };
@@ -55,15 +52,6 @@
 
           modules = [
             ./hosts/nixos/configuration.nix
-            inputs.home-manager.nixosModules.default
-          ];
-        };
-        test = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
-
-          modules = [
-            ./hosts/test/configuration.nix
             inputs.home-manager.nixosModules.default
           ];
         };

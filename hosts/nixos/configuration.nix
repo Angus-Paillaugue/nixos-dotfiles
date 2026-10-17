@@ -36,7 +36,6 @@
     ];
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
-      LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
     };
     systemPackages = with pkgs; [
       qemu
@@ -54,7 +53,10 @@
     firewall = {
       enable = true;
       # Always allow traffic from your Tailscale network
-      trustedInterfaces = [ config.services.tailscale.interfaceName "virbr0" ];
+      trustedInterfaces = [
+        config.services.tailscale.interfaceName
+        "virbr0"
+      ];
       # Allow the Tailscale UDP port through the firewall
       allowedUDPPorts = [ config.services.tailscale.port ];
       # See https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111
@@ -82,7 +84,11 @@
 
   # System-wide programs
   programs = {
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      package = pkgs.unstablePkgs.hyprland;
+      portalPackage = pkgs.unstablePkgs.xdg-desktop-portal-hyprland;
+    };
     steam.enable = true;
     nix-ld = {
       enable = true;
@@ -206,9 +212,9 @@
         "nix-command"
         "flakes"
       ];
-      substituters = [ "https://hyprland.cachix.org" ];
-      trusted-substituters = [ "https://hyprland.cachix.org" ];
-      trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+      substituters = [ "https://noctalia.cachix.org" ];
+      trusted-substituters = [ "https://noctalia.cachix.org" ];
+      trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
       trusted-users = [
         "root"
         "@wheel"

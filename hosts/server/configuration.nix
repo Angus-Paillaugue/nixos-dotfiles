@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 let
@@ -92,6 +93,7 @@ in
     nvidia = {
       open = true;
       modesetting.enable = true;
+      nvidiaSettings = true;
     };
     # TODO: Fix cdi not behaving
     nvidia-container-toolkit.enable = true;
@@ -99,7 +101,7 @@ in
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";
-  
+
   i18n = {
     defaultLocale = "en_US.UTF-8";
 
@@ -123,6 +125,7 @@ in
       enable = true;
       settings.PermitRootLogin = "yes";
     };
+    # TODO: Fix openssh + tailscale
     # openssh = {
     #   enable = true;
     #   settings = {
@@ -147,11 +150,19 @@ in
         variant = "";
       };
     };
-    displayManager.gdm.enable = true;
+    displayManager = {
+      gdm = {
+        enable = true;
+        autoSuspend = false;
+      };
+      autoLogin = {
+        enable = true;
+        user = "gaming";
+      };
+    };
     desktopManager.gnome.enable = true;
     qemuGuest.enable = true;
     pulseaudio.enable = false;
-    # rtkit.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -166,16 +177,13 @@ in
   };
 
   users.users = {
-    "angus" = {
+    "gaming" = {
       isNormalUser = true;
-      description = "Angus";
+      description = "Gaming";
       shell = pkgs.fish;
       extraGroups = [
         "networkmanager"
         "wheel"
-      ];
-      packages = with pkgs; [
-        firefox
       ];
     };
     "root" = {
@@ -183,8 +191,16 @@ in
       openssh.authorizedKeys.keys = [
         (builtins.readFile ../../ssh/nixos.pub)
       ];
-      extraGroups = ["docker"];
+      extraGroups = [ "docker" ];
     };
+  };
+
+  home-manager = {
+    extraSpecialArgs = {
+      inherit inputs;
+      hostName = config.networking.hostName;
+    };
+    users."gaming" = import ./home-gaming.nix;
   };
 
   environment.systemPackages = with pkgs; [

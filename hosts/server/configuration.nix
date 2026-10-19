@@ -61,8 +61,8 @@ in
   };
 
   services = {
-    # zfs.autoScrub.enable = true;
-    # zfs.trim.enable = true;
+    zfs.autoScrub.enable = true;
+    zfs.trim.enable = true;
     openssh = {
       enable = true;
       settings.PermitRootLogin = "yes";
@@ -104,7 +104,7 @@ in
   users.users."angus" = {
     isNormalUser = true;
     description = "Angus";
-    # shell = pkgs.fish;
+    shell = pkgs.fish;
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -113,28 +113,28 @@ in
       firefox
     ];
   };
-  # users.users.root = {
-  #   shell = pkgs.fish;
-  #   openssh.authorizedKeys.keys = [
-  #     (builtins.readFile ../../ssh/nixos.pub)
-  #   ];
-  # };
+  users.users.root = {
+    shell = pkgs.fish;
+    openssh.authorizedKeys.keys = [
+      (builtins.readFile ../../ssh/nixos.pub)
+    ];
+  };
 
-  # environment.systemPackages = with pkgs; [
-  #   borgbackup
-  #   git
-  #   htop
-  #   pciutils
-  #   smartmontools
-  #   zfs
-  #   curl
-  #   wget
-  # ];
+  environment.systemPackages = with pkgs; [
+    borgbackup
+    git
+    htop
+    pciutils
+    smartmontools
+    zfs
+    curl
+    wget
+  ];
 
-  # programs = {
-  #   fish.enable = true;
-  #   git.enable = true;
-  # };
+  programs = {
+    fish.enable = true;
+    git.enable = true;
+  };
 
   nixpkgs.config.allowUnfree = true;
 

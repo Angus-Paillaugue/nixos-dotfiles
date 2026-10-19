@@ -23,41 +23,89 @@ in
     ./hardware-configuration.nix
   ];
 
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostId = "5b59d32a";
-  boot.kernelPackages = latestKernelPackage;
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs.forceImportRoot = false;
-  boot.zfs.extraPools = [ "tank" ];
-  networking.hostName = "server";
-  systemd.services.zfs-mount.enable = false;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    initrd = {
+      systemd.network.wait-online.enable = false;
+      network.enable = true;
+    };
+    kernelPackages = latestKernelPackage;
+    supportedFilesystems = [ "zfs" ];
+    zfs = {
+      forceImportRoot = false;
+      extraPools = [ "tank" ];
+    };
+  };
+
+  systemd = {
+    network.wait-online.enable = false;
+    services = {
+      zfs-mount.enable = false;
+      suspend.enable = false;
+      sleep.enable = false;
+      tailscaled.serviceConfig.Environment = [
+        "TS_DEBUG_FIREWALL_MODE=nftables"
+      ];
+    };
+  };
+
+  networking = {
+    hostId = "5b59d32a";
+    hostName = "server";
+    networkmanager.enable = true;
+    nftables.enable = true;
+    firewall = {
+      # TODO: Fix this dumb firewall blocking NPM
+      enable = false;
+      checkReversePath = "loose";
+      trustedInterfaces = [
+        config.services.tailscale.interfaceName
+        "docker0"
+      ];
+      allowedTCPPorts = [
+        53
+        80
+        443
+        853
+        5443
+      ];
+      allowedUDPPorts = [
+        config.services.tailscale.port
+        53
+        443
+        784
+        853
+        8853
+        5443
+      ];
+    };
+  };
 
   # Nvidia
   # hardware.graphics.enable = true;
   # hardware.nvidia.open = true;
   # hardware.nvidia.modesetting.enable = true;
 
-  # Enable networking
-  networking.networkmanager.enable = true;
-
   # Set your time zone.
   time.timeZone = "Europe/Paris";
+  
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "fr_FR.UTF-8";
-    LC_IDENTIFICATION = "fr_FR.UTF-8";
-    LC_MEASUREMENT = "fr_FR.UTF-8";
-    LC_MONETARY = "fr_FR.UTF-8";
-    LC_NAME = "fr_FR.UTF-8";
-    LC_NUMERIC = "fr_FR.UTF-8";
-    LC_PAPER = "fr_FR.UTF-8";
-    LC_TELEPHONE = "fr_FR.UTF-8";
-    LC_TIME = "fr_FR.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "fr_FR.UTF-8";
+      LC_IDENTIFICATION = "fr_FR.UTF-8";
+      LC_MEASUREMENT = "fr_FR.UTF-8";
+      LC_MONETARY = "fr_FR.UTF-8";
+      LC_NAME = "fr_FR.UTF-8";
+      LC_NUMERIC = "fr_FR.UTF-8";
+      LC_PAPER = "fr_FR.UTF-8";
+      LC_TELEPHONE = "fr_FR.UTF-8";
+      LC_TIME = "fr_FR.UTF-8";
+    };
   };
 
   services = {
@@ -74,7 +122,15 @@ in
     #     PasswordAuthentication = false;
     #   };
     # };
-    # tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      useRoutingFeatures = "server";
+      extraUpFlags = [
+        "--ssh"
+        "--advertise-routes=192.168.0.0/24"
+        "--advertise-exit-node"
+      ];
+    };
     xserver = {
       # videoDrivers = [ "nvidia" ];
       enable = true;
@@ -101,23 +157,26 @@ in
     enableOnBoot = true;
   };
 
-  users.users."angus" = {
-    isNormalUser = true;
-    description = "Angus";
-    shell = pkgs.fish;
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
-    packages = with pkgs; [
-      firefox
-    ];
-  };
-  users.users.root = {
-    shell = pkgs.fish;
-    openssh.authorizedKeys.keys = [
-      (builtins.readFile ../../ssh/nixos.pub)
-    ];
+  users.users = {
+    "angus" = {
+      isNormalUser = true;
+      description = "Angus";
+      shell = pkgs.fish;
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
+      packages = with pkgs; [
+        firefox
+      ];
+    };
+    "root" = {
+      shell = pkgs.fish;
+      openssh.authorizedKeys.keys = [
+        (builtins.readFile ../../ssh/nixos.pub)
+      ];
+      extraGroups = ["docker"];
+    };
   };
 
   environment.systemPackages = with pkgs; [
@@ -137,27 +196,6 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
-
-  # 1. Enable the service and the firewall
-  # networking.nftables.enable = true;
-  # networking.firewall = {
-  #   enable = true;
-  #   # Always allow traffic from your Tailscale network
-  #   trustedInterfaces = [ config.services.tailscale.interfaceName ];
-  #   # Allow the Tailscale UDP port through the firewall
-  #   allowedUDPPorts = [ config.services.tailscale.port ];
-  # };
-
-  # # 2. Force tailscaled to use nftables (Critical for clean nftables-only systems)
-  # # This avoids the "iptables-compat" translation layer issues.
-  # systemd.services.tailscaled.serviceConfig.Environment = [
-  #   "TS_DEBUG_FIREWALL_MODE=nftables"
-  # ];
-
-  # # 3. Optimization: Prevent systemd from waiting for network online
-  # # (Optional but recommended for faster boot with VPNs)
-  # systemd.network.wait-online.enable = false;
-  # boot.initrd.systemd.network.wait-online.enable = false;
 
   nix = {
     settings = {

@@ -96,10 +96,10 @@ in
     };
   };
 
-  # virtualisation.docker = {
-  #   enable = true;
-  #   enableOnBoot = true;
-  # };
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
+  };
 
   users.users."angus" = {
     isNormalUser = true;

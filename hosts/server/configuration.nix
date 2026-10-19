@@ -10,6 +10,10 @@ let
     (builtins.match "linux_[0-9]+_[0-9]+" name) != null
     && (builtins.tryEval kernelPackages).success
     && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
+    && (builtins.tryEval kernelPackages.nvidiaPackages.production.mod).success
+    && (!kernelPackages.nvidiaPackages.production.mod.meta.broken)
+    # NVIDIA 595 currently does not build against the development 7.x kernels.
+    && (lib.versionOlder kernelPackages.kernel.version "7.0")
   ) pkgs.linuxKernel.packages;
   latestKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
@@ -19,7 +23,6 @@ let
 in
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
@@ -85,9 +88,10 @@ in
   };
 
   # Nvidia
-  # hardware.graphics.enable = true;
-  # hardware.nvidia.open = true;
-  # hardware.nvidia.modesetting.enable = true;
+  hardware.graphics.enable = true;
+  hardware.nvidia.open = true;
+  hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia-container-toolkit.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";
@@ -132,7 +136,7 @@ in
       ];
     };
     xserver = {
-      # videoDrivers = [ "nvidia" ];
+      videoDrivers = [ "nvidia" ];
       enable = true;
       xkb = {
         layout = "us";
@@ -188,6 +192,7 @@ in
     zfs
     curl
     wget
+    jq
   ];
 
   programs = {

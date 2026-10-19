@@ -87,11 +87,15 @@ in
     };
   };
 
-  # Nvidia
-  hardware.graphics.enable = true;
-  hardware.nvidia.open = true;
-  hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia-container-toolkit.enable = true;
+  hardware = {
+    graphics.enable = true;
+    nvidia = {
+      open = true;
+      modesetting.enable = true;
+    };
+    # TODO: Fix cdi not behaving
+    nvidia-container-toolkit.enable = true;
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";

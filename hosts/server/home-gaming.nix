@@ -24,10 +24,11 @@
 
   # Modules
   kitty.enable = true;
+  starship.enable = true;
+  fastfetch.enable = true;
 
   home = {
     packages = with pkgs; [
-      btop
       prismlauncher
       vlc
     ];

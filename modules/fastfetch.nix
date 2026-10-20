@@ -1,56 +1,72 @@
-{ pkgs, ... }: {
-  programs.fastfetch = {
-    enable = true;
-    package = pkgs.fastfetch.minimal;
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
+{
+  options.fastfetch = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable fastfetch";
+    };
+  };
 
-    settings = {
-      logo = {
-        type = "small";
-      };
-      display = {
-        separator = "  ";
-        color = {
-          keys = "blue";
+  config = lib.mkIf config.fastfetch.enable {
+    programs.fastfetch = {
+      enable = true;
+      package = pkgs.fastfetch.minimal;
+
+      settings = {
+        logo = {
+          type = "small";
         };
-        size = {
-          ndigits = 0;
-          maxPrefix = "GB";
-        };
-      };
-      modules = [
-        {
-          type = "os";
-          key = "╭─";
-          format = "{3}";
-        }
-        {
-          type = "shell";
-          key = "├─";
-        }
-        {
-          type = "cpu";
-          key = "├─󰍛";
-          format = "{1}";
-        }
-        {
-          type = "disk";
-          key = "├─";
-          format = "{1} / {2} ({3})";
-          percent = {
-            green = 70;
-            yellow = 85;
+        display = {
+          separator = "  ";
+          color = {
+            keys = "blue";
           };
-        }
-        {
-          type = "packages";
-          key = "├─󰏗";
-          format = "{1} packages";
-        }
-        {
-          type = "uptime";
-          key = "╰─󰄉";
-        }
-      ];
+          size = {
+            ndigits = 0;
+            maxPrefix = "GB";
+          };
+        };
+        modules = [
+          {
+            type = "os";
+            key = "╭─";
+            format = "{3}";
+          }
+          {
+            type = "shell";
+            key = "├─";
+          }
+          {
+            type = "cpu";
+            key = "├─󰍛";
+            format = "{1}";
+          }
+          {
+            type = "disk";
+            key = "├─";
+            format = "{1} / {2} ({3})";
+            percent = {
+              green = 70;
+              yellow = 85;
+            };
+          }
+          {
+            type = "packages";
+            key = "├─󰏗";
+            format = "{1} packages";
+          }
+          {
+            type = "uptime";
+            key = "╰─󰄉";
+          }
+        ];
+      };
     };
   };
 }

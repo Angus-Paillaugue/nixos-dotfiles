@@ -45,6 +45,12 @@ in
   };
 
   systemd = {
+    sleep.settings.Sleep = {
+      AllowSuspend = false;
+      AllowHibernation = false;
+      AllowSuspendThenHibernate = false;
+      AllowHybridSleep = false;
+    };
     network.wait-online.enable = false;
     services = {
       zfs-mount.enable = false;
@@ -119,8 +125,10 @@ in
   };
 
   services = {
-    zfs.autoScrub.enable = true;
-    zfs.trim.enable = true;
+    zfs = {
+      autoScrub.enable = true;
+      trim.enable = true;
+    };
     openssh = {
       enable = true;
       settings.PermitRootLogin = "yes";
@@ -169,6 +177,12 @@ in
       alsa.support32Bit = true;
       pulse.enable = true;
     };
+    sunshine = {
+      enable = true;
+      autoStart = true;
+      capSysAdmin = true;
+      openFirewall = true;
+    };
   };
 
   virtualisation.docker = {
@@ -184,6 +198,7 @@ in
       extraGroups = [
         "networkmanager"
         "wheel"
+        "uinput"
       ];
     };
     "root" = {
@@ -201,6 +216,7 @@ in
       hostName = config.networking.hostName;
     };
     users."gaming" = import ./home-gaming.nix;
+    users."root" = import ./home-root.nix;
   };
 
   environment.systemPackages = with pkgs; [
@@ -213,6 +229,7 @@ in
     curl
     wget
     jq
+    btop
   ];
 
   programs = {

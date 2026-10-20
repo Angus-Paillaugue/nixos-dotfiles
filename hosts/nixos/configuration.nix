@@ -1,13 +1,13 @@
 {
-  config,
   pkgs,
   inputs,
   ...
 }:
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ../../modules/nixos
+    ./modules/nixos
   ];
 
   boot = {
@@ -15,7 +15,6 @@
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    initrd.systemd.network.wait-online.enable = false;
   };
 
   hardware = {
@@ -30,55 +29,9 @@
     };
   };
 
-  environment = {
-    pathsToLink = [
-      "/share/hypr"
-    ];
-    sessionVariables = {
-      LIBVA_DRIVER_NAME = "iHD";
-    };
-    systemPackages = with pkgs; [
-      qemu
-      borgbackup
-      dnsmasq
-    ];
-  };
-
   networking = {
     hostName = "nixos"; # Define your hostname.
-    # Enable networking
     networkmanager.enable = true;
-    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-    nftables.enable = true;
-    firewall = {
-      enable = true;
-      # Always allow traffic from your Tailscale network
-      trustedInterfaces = [
-        config.services.tailscale.interfaceName
-        "virbr0"
-      ];
-      # Allow the Tailscale UDP port through the firewall
-      allowedUDPPorts = [ config.services.tailscale.port ];
-      # See https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111
-      checkReversePath = "loose";
-    };
-  };
-
-  time.timeZone = "Europe/Paris";
-
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = {
-      LC_ADDRESS = "fr_FR.UTF-8";
-      LC_IDENTIFICATION = "fr_FR.UTF-8";
-      LC_MEASUREMENT = "fr_FR.UTF-8";
-      LC_MONETARY = "fr_FR.UTF-8";
-      LC_NAME = "fr_FR.UTF-8";
-      LC_NUMERIC = "fr_FR.UTF-8";
-      LC_PAPER = "fr_FR.UTF-8";
-      LC_TELEPHONE = "fr_FR.UTF-8";
-      LC_TIME = "fr_FR.UTF-8";
-    };
   };
 
   programs = {
@@ -87,7 +40,6 @@
       package = pkgs.unstablePkgs.hyprland;
       portalPackage = pkgs.unstablePkgs.xdg-desktop-portal-hyprland;
     };
-    steam.enable = true;
     nix-ld = {
       enable = true;
       libraries = with pkgs; [
@@ -101,100 +53,6 @@
     };
   };
 
-  security = {
-    rtkit.enable = true;
-    # The daily update runs as a systemd --user service, so sudo must not try
-    # to prompt for a password. Keep the passwordless rule limited to the
-    # rebuild command; all other sudo commands retain normal authentication.
-    sudo.extraRules = [
-      {
-        users = [ "angus" ];
-        commands = [
-          {
-            command = "/run/current-system/sw/bin/nixos-rebuild";
-            options = [ "NOPASSWD" ];
-          }
-        ];
-      }
-    ];
-  };
-
-  services = {
-    power-profiles-daemon.enable = true;
-    upower.enable = true;
-
-    tailscale.enable = true;
-
-    xserver = {
-      enable = true;
-      # Configure keymap in X11
-      xkb = {
-        layout = "us";
-        variant = "";
-      };
-    };
-
-    # Enable the GNOME Desktop Environment.
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
-    # Enable CUPS to print documents.
-    printing.enable = true;
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-    };
-    # Enable sound with pipewire.
-    pulseaudio.enable = false;
-
-    qemuGuest.enable = true;
-    spice-vdagentd.enable = true;
-  };
-
-  virtualisation = {
-    docker.enable = true;
-    libvirtd = {
-      enable = true;
-      qemu = {
-        swtpm.enable = true;
-      };
-      firewallBackend = "nftables";
-    };
-  };
-
-  users.users.angus = {
-    isNormalUser = true;
-    description = "Angus";
-    shell = pkgs.fish;
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "docker"
-      "libvirtd"
-    ];
-  };
-
-  home-manager = {
-    extraSpecialArgs = {
-      inherit inputs;
-      hostName = config.networking.hostName;
-    };
-    users."angus" = import ./home.nix;
-  };
-
-  systemd = {
-    # Force tailscaled to use nftables (Critical for clean nftables-only systems)
-    # This avoids the "iptables-compat" translation layer issues.
-    services.tailscaled.serviceConfig.Environment = [
-      "TS_DEBUG_FIREWALL_MODE=nftables"
-    ];
-
-    # Prevent systemd from waiting for network online
-    # (Optional but recommended for faster boot with VPNs)
-    network.wait-online.enable = false;
-  };
-
   nixpkgs = {
     overlays = [
       inputs.self.overlays.unstable-packages
@@ -203,36 +61,5 @@
     config.allowUnfree = true;
   };
 
-  nix = {
-    settings = {
-      auto-optimise-store = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      substituters = [ "https://noctalia.cachix.org" ];
-      trusted-substituters = [ "https://noctalia.cachix.org" ];
-      trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
-      trusted-users = [
-        "root"
-        "@wheel"
-      ];
-    };
-
-    # Garbage collection
-    gc = {
-      automatic = true;
-      persistent = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
-  };
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.11"; # Did you read the comment?
+  system.stateVersion = "25.11";
 }

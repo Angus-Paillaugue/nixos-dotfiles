@@ -1,5 +1,4 @@
 {
-  lib,
   ...
 }:
 
@@ -8,9 +7,9 @@
   home.homeDirectory = "/root";
   home.stateVersion = "25.11";
 
-  imports = lib.filter (n: lib.strings.hasSuffix ".nix" n) (
-    lib.filesystem.listFilesRecursive ../../modules
-  );
+  imports = [
+    ../../modules/home-manager
+  ];
 
   # Modules
   fastfetch.enable = true;

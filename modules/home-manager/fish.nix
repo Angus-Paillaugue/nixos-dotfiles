@@ -14,10 +14,13 @@
   };
 
   config = lib.mkIf config.fish.enable {
-    home.packages = with pkgs; [
-      eza
-      bat
-    ] ++ lib.optional config.starship.enable pkgs.starship;
+    home.packages =
+      with pkgs;
+      [
+        eza
+        bat
+      ]
+      ++ lib.optional config.starship.enable pkgs.starship;
 
     programs.fish = {
       enable = true;

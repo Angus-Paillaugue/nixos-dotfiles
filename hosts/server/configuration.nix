@@ -1,7 +1,5 @@
 {
-  config,
   pkgs,
-  inputs,
   ...
 }:
 let
@@ -12,6 +10,8 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ../../modules/nixos
+    ./modules/nixos
   ];
 
   boot = {
@@ -19,120 +19,18 @@ in
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    initrd = {
-      systemd.network.wait-online.enable = false;
-      network.enable = true;
-    };
+    initrd.network.enable = true;
     kernelPackages = latestKernelPackage;
-    supportedFilesystems = [ "zfs" ];
-    zfs = {
-      forceImportRoot = false;
-      extraPools = [ "tank" ];
-    };
-  };
-
-  systemd = {
-    sleep.settings.Sleep = {
-      AllowSuspend = false;
-      AllowHibernation = false;
-      AllowSuspendThenHibernate = false;
-      AllowHybridSleep = false;
-    };
-    network.wait-online.enable = false;
-    services = {
-      zfs-mount.enable = false;
-      suspend.enable = false;
-      sleep.enable = false;
-      tailscaled.serviceConfig.Environment = [
-        "TS_DEBUG_FIREWALL_MODE=nftables"
-      ];
-    };
   };
 
   networking = {
     hostId = "5b59d32a";
     hostName = "server";
     networkmanager.enable = true;
-    nftables.enable = true;
-    firewall = {
-      # TODO: Fix this dumb firewall blocking NPM
-      enable = false;
-      checkReversePath = "loose";
-      trustedInterfaces = [
-        config.services.tailscale.interfaceName
-        "docker0"
-      ];
-      allowedTCPPorts = [
-        53
-        80
-        443
-        853
-        5443
-      ];
-      allowedUDPPorts = [
-        config.services.tailscale.port
-        53
-        443
-        784
-        853
-        8853
-        5443
-      ];
-    };
-  };
-
-  hardware = {
-    graphics = {
-      enable = true;
-      enable32Bit = true;
-    };
-    nvidia = {
-      open = true;
-      modesetting.enable = true;
-      nvidiaSettings = true;
-    };
-    nvidia-container-toolkit.enable = true;
-  };
-
-  # Set your time zone.
-  time.timeZone = "Europe/Paris";
-
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-
-    extraLocaleSettings = {
-      LC_ADDRESS = "fr_FR.UTF-8";
-      LC_IDENTIFICATION = "fr_FR.UTF-8";
-      LC_MEASUREMENT = "fr_FR.UTF-8";
-      LC_MONETARY = "fr_FR.UTF-8";
-      LC_NAME = "fr_FR.UTF-8";
-      LC_NUMERIC = "fr_FR.UTF-8";
-      LC_PAPER = "fr_FR.UTF-8";
-      LC_TELEPHONE = "fr_FR.UTF-8";
-      LC_TIME = "fr_FR.UTF-8";
-    };
   };
 
   services = {
-    zfs = {
-      autoScrub = {
-        enable = true;
-        interval = "weekly";
-      };
-      trim = {
-        enable = true;
-        interval = "weekly";
-      };
-    };
-    openssh = {
-      enable = true;
-      settings = {
-        PermitRootLogin = "prohibit-password";
-        PasswordAuthentication = false;
-      };
-    };
     tailscale = {
-      enable = true;
       useRoutingFeatures = "server";
       extraUpFlags = [
         "--ssh"
@@ -140,30 +38,6 @@ in
         "--advertise-exit-node"
       ];
     };
-    xserver = {
-      videoDrivers = [ "nvidia" ];
-      enable = true;
-      xkb = {
-        layout = "us";
-        variant = "";
-      };
-    };
-    displayManager = {
-      gdm = {
-        enable = true;
-        autoSuspend = false;
-      };
-      autoLogin = {
-        enable = true;
-        user = "gaming";
-      };
-    };
-    desktopManager.gnome.enable = true;
-    gnome = {
-      core-developer-tools.enable = false;
-      games.enable = false;
-    };
-    qemuGuest.enable = true;
     pulseaudio.enable = false;
     pipewire = {
       enable = true;
@@ -171,122 +45,30 @@ in
       alsa.support32Bit = true;
       pulse.enable = true;
     };
-    prometheus.exporters.node = {
-      enable = true;
-      port = 9100;
-    };
-    sunshine = {
-      enable = true;
-      autoStart = true;
-      capSysAdmin = true;
-      openFirewall = true;
-    };
-    samba = {
-      enable = true;
-      securityType = "user";
-      openFirewall = true;
-      settings = {
-        global = {
-          "workgroup" = "WORKGROUP";
-          "server string" = "smbnix";
-          "netbios name" = "smbnix";
-          "security" = "user";
-          "guest account" = "nobody";
-          "map to guest" = "bad user";
-        };
-        "backups" = {
-          "path" = "/mnt/storage/backups";
-          "browseable" = "yes";
-          "read only" = "no";
-          "guest ok" = "no";
-          "create mask" = "0644";
-          "directory mask" = "0755";
-          "valid users" = "backups";
-        };
-      };
-    };
-  };
-
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
-    daemon.settings.features.cdi = true;
-  };
-
-  users.users = {
-    "gaming" = {
-      isNormalUser = true;
-      description = "Gaming";
-      shell = pkgs.fish;
-      extraGroups = [
-        "networkmanager"
-        "wheel"
-        "uinput"
-      ];
-    };
-    "root" = {
-      shell = pkgs.fish;
-      openssh.authorizedKeys.keys = [
-        (builtins.readFile ../../ssh/nixos.pub)
-      ];
-      extraGroups = [ "docker" ];
-    };
-    "backups" = {
-      isNormalUser = true;
-      description = "Backups";
-    };
-  };
-
-  home-manager = {
-    extraSpecialArgs = {
-      inherit inputs;
-      hostName = config.networking.hostName;
-    };
-    users."gaming" = import ./home-gaming.nix;
-    users."root" = import ./home-root.nix;
   };
 
   environment.systemPackages = with pkgs; [
     borgbackup
     git
     htop
-    pciutils
-    smartmontools
-    zfs
     curl
     wget
     jq
     btop
-    nvtopPackages.nvidia
   ];
 
   programs = {
     fish.enable = true;
     git.enable = true;
-    steam.enable = true;
   };
 
   nixpkgs.config.allowUnfree = true;
 
-  nix = {
-    settings = {
-      auto-optimise-store = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      trusted-users = [
-        "root"
-        "@wheel"
-      ];
-    };
-    gc = {
-      automatic = true;
-      persistent = true;
-      dates = "weekly";
-      options = "--delete-older-than 14d";
-    };
-  };
+  # Nix garbage collection keeps 14 days old generations instead of 7, just because I can
+  nixConfig.gc.keepDays = 14;
+
+  # Enable docker nvidia support
+  dockerModule.with-nvidia = true;
 
   system.stateVersion = "26.05";
 }

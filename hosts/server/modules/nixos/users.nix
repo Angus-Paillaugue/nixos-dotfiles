@@ -1,0 +1,40 @@
+{
+  pkgs,
+  inputs,
+  config,
+  ...
+}:
+{
+  users.users = {
+    "gaming" = {
+      isNormalUser = true;
+      description = "Gaming";
+      shell = pkgs.fish;
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "uinput"
+      ];
+    };
+    "root" = {
+      shell = pkgs.fish;
+      openssh.authorizedKeys.keys = [
+        (builtins.readFile ../../../../ssh/nixos.pub)
+      ];
+      extraGroups = [ "docker" ];
+    };
+    "backups" = {
+      isNormalUser = true;
+      description = "Backups";
+    };
+  };
+
+  home-manager = {
+    extraSpecialArgs = {
+      inherit inputs;
+      hostName = config.networking.hostName;
+    };
+    users."gaming" = import ../../home-gaming.nix;
+    users."root" = import ../../home-root.nix;
+  };
+}

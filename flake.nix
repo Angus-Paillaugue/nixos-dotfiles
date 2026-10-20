@@ -38,32 +38,30 @@
   };
 
   outputs =
-    {
-      nixpkgs,
-      ...
-    }@inputs:
+    inputs:
+    let
+      mkNixosConfiguration =
+        { system, name }:
+        inputs.nixpkgs.lib.nixosSystem {
+          system = system;
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/${name}/configuration.nix
+            inputs.home-manager.nixosModules.default
+          ];
+        };
+    in
     {
       overlays = import ./overlays { inherit inputs; };
 
       nixosConfigurations = {
-        nixos = nixpkgs.lib.nixosSystem {
+        nixos = mkNixosConfiguration {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
-
-          modules = [
-            ./hosts/nixos/configuration.nix
-            inputs.home-manager.nixosModules.default
-          ];
+          name = "nixos";
         };
-
-        server = nixpkgs.lib.nixosSystem {
+        server = mkNixosConfiguration {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
-
-          modules = [
-            ./hosts/server/configuration.nix
-            inputs.home-manager.nixosModules.default
-          ];
+          name = "server";
         };
       };
     };

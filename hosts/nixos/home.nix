@@ -36,6 +36,7 @@
   direnv.enable = true;
   starship.enable = true;
   fastfetch.enable = true;
+  helium.enable = true;
   backup = {
     enable = true;
     target = "root@192.168.0.3:/mnt/storage/backups/${hostName}";

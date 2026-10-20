@@ -171,6 +171,11 @@ in
       };
     };
     desktopManager.gnome.enable = true;
+    gnome = {
+      core-apps.enable = false;
+      core-developer-tools.enable = false;
+      games.enable = false;
+    };
     qemuGuest.enable = true;
     pulseaudio.enable = false;
     pipewire = {
@@ -244,6 +249,7 @@ in
   programs = {
     fish.enable = true;
     git.enable = true;
+    steam.enable = true;
   };
 
   nixpkgs.config.allowUnfree = true;

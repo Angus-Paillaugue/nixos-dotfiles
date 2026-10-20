@@ -34,6 +34,9 @@
   update.enable = true;
   syncthing.enable = true;
   direnv.enable = true;
+  starship.enable = true;
+  fastfetch.enable = true;
+  helium.enable = true;
   backup = {
     enable = true;
     target = "root@192.168.0.3:/mnt/storage/backups/${hostName}";
@@ -102,6 +105,7 @@
       NIXOS_OZONE_WL = "1";
       NIXOS_FORCE_FONTCONFIG_DIRS = "1";
     };
+    file.".ssh/id_ed25519.pub".source = ../../ssh/nixos.pub;
   };
 
   programs = {
@@ -144,14 +148,9 @@
   };
 
   sops.secrets = {
-    "nixos/private" = {
-      sopsFile = ../../secrets/ssh.yaml;
+    private_key = {
+      sopsFile = ../../secrets/nixos_ssh.yaml;
       path = "${config.home.homeDirectory}/.ssh/id_ed25519";
-    };
-
-    "nixos/public" = {
-      sopsFile = ../../secrets/ssh.yaml;
-      path = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
     };
 
     borg_password.sopsFile = ../../secrets/borg.yaml;

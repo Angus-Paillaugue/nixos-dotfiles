@@ -1,6 +1,6 @@
 { lib, ... }: {
   networking.firewall = {
-    enable = lib.mkDefault false;
+    enable = lib.mkForce false;
     checkReversePath = "loose";
     trustedInterfaces = [
       "docker0"

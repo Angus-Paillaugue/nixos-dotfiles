@@ -4,7 +4,7 @@
 }:
 let
   # TODO: Fix the hard pinned kernel version
-  # This is here because ZFS and Nvidi do not know how to behave...
+  # This is here because ZFS and Nvidia do not know how to behave...
   latestKernelPackage = pkgs.linuxKernel.packages.linux_6_18;
 in
 {

@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+declare -A EXTRA_HOST_ARGS
+EXTRA_HOST_ARGS[server]="--sudo --build-host server --target-host server"
+
+function help() {
+  echo "Usage: $0 [command] [options]"
+  echo "Commands:"
+  echo "  switch                  - Run nixos-rebuild switch"
+  echo "  test                    - Run nixos-rebuild test"
+  echo "Options:"
+  echo "  -h, --host <hostname>   - Specify the target host (default: current host)"
+  exit 1
+}
+
+# Check if the command is provided
+if [[ $# -lt 1 ]]; then
+  echo "Error: No command provided."
+  help
+fi
+
+command="$1"
+shift
+host=""
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -h|--host)
+      host="$2"
+      shift 2
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+
+function command_log() {
+  local command="$1"
+  echo -e "Running command: \e[1;32m$command\e[0m"
+}
+
+function get_cores() {
+  local threads=$(nproc)
+  local ram_gb=$(awk '/MemTotal/ { printf "%d", $2 / 1024 / 1024 }' /proc/meminfo)
+  local ram_limit=$((ram_gb / 2))
+  local cpu_limit=$((threads * 9 / 10))
+  local cores=$((ram_limit < cpu_limit ? ram_limit : cpu_limit))
+  cores=$((cores < 2 ? 2 : cores))
+  echo "$cores"
+}
+
+function get_jobs() {
+  local ram_gb=$(awk '/MemTotal/ { printf "%d", $2 / 1024 / 1024 }' /proc/meminfo)
+  # 16GbB ram = 1 job
+  local jobs=$((ram_gb / 16))
+  echo "$((jobs>0 ? jobs : 1))"
+}
+
+current_host=$(hostname)
+if [[ -z "$host" ]]; then
+  host="$current_host"
+fi
+
+EXTRA_HOST_ARGS_FOR_HOST="${EXTRA_HOST_ARGS[$host]}"
+EXTRA_HOST_ENV_FOR_HOST="${EXTRA_HOST_ENV[$host]}"
+COMMAND_ARGS="--max-jobs $(get_jobs) --cores $(get_cores) --accept-flake-config --flake .#${host} ${EXTRA_HOST_ARGS_FOR_HOST}"
+
+function nixos_rebuild() {
+  local command="$1"
+  echo "Running nixos-rebuild test for ${host}"
+  if [[ $host == $current_host ]]; then
+    command_log "/run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}"
+    /run/wrappers/bin/sudo -n \
+      /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}
+  else
+    command_log "NIX_SSHOPTS='-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes\" /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}"
+    NIX_SSHOPTS='-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+    /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}
+  fi
+}
+
+
+case $command in
+  switch)
+    nixos_rebuild switch
+    ;;
+  test)
+    nixos_rebuild test
+    ;;
+  *)
+    echo "Unknown command: $command"
+    help
+    exit 1
+    ;;
+esac

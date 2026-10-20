@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   inputs,
   ...
 }:
@@ -18,21 +17,19 @@
     config.allowUnfree = true;
   };
 
-  imports = lib.filter (n: lib.strings.hasSuffix ".nix" n) (
-    lib.filesystem.listFilesRecursive ../../modules
-  );
+  imports = [
+    ../../modules/home-manager
+  ];
 
   # Modules
   kitty.enable = true;
   starship.enable = true;
   fastfetch.enable = true;
 
-  home = {
-    packages = with pkgs; [
-      prismlauncher
-      vlc
-    ];
-  };
+  home.packages = with pkgs; [
+    prismlauncher
+    vlc
+  ];
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

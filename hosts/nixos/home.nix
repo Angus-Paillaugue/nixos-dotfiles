@@ -1,6 +1,4 @@
 {
-  pkgs,
-  lib,
   config,
   hostName,
   inputs,
@@ -12,17 +10,10 @@
   home.homeDirectory = "/home/angus";
   home.stateVersion = "25.11";
 
-  nixpkgs = {
-    overlays = [
-      inputs.self.overlays.unstable-packages
-    ];
-
-    config.allowUnfree = true;
-  };
-
-  imports = lib.filter (n: lib.strings.hasSuffix ".nix" n) (
-    lib.filesystem.listFilesRecursive ../../modules
-  );
+  imports = [
+    ../../modules/home-manager
+    ./modules/home-manager
+  ];
 
   # Modules
   zen.enable = true;
@@ -51,78 +42,10 @@
   };
 
   home = {
-    packages = with pkgs; [
-      nil
-      nixfmt
-      btop
-      bibata-cursors
-      adw-gtk3
-      nautilus
-      nerd-fonts.jetbrains-mono
-      google-fonts
-      fnm
-      nwg-displays
-      jq
-      libreoffice
-      prismlauncher
-      remmina
-      vlc
-      curl
-      wget
-      tree
-      bat
-      gnumake
-      eza
-      bat
-      go-task
-      unstablePkgs.bun
-      moonlight-qt
-      nwg-displays
-      nwg-look
-      inkscape
-      virt-manager
-      nixd
-      openssl
-      sops
-      age
-      ssh-to-age
-      eog
-      xar
-      qemu
-      quickemu
-      libnotify
-      vorta
-      less
-      yt-dlp
-      beekeeper-studio
-      gnupg
-      opentofu
-      hyprpicker
-      bruno
-    ];
-
     sessionVariables = {
       NIXOS_OZONE_WL = "1";
       NIXOS_FORCE_FONTCONFIG_DIRS = "1";
     };
-    file.".ssh/id_ed25519.pub".source = ../../ssh/nixos.pub;
-  };
-
-  programs = {
-    ssh = {
-      enable = true;
-      enableDefaultConfig = false;
-      settings = {
-        "Host server" = {
-          HostName = "192.168.0.3";
-          User = "root";
-          IdentityFile = "~/.ssh/id_ed25519";
-        };
-      };
-    };
-
-    # Let Home Manager install and manage itself.
-    home-manager.enable = true;
   };
 
   dconf.settings = {
@@ -136,23 +59,14 @@
 
   targets.genericLinux.nixGL.vulkan.enable = true;
 
-  programs.git = {
-    enable = true;
-    settings.user = {
-      name = "Angus-Paillaugue";
-      email = "angus@paillaugue.fr";
-    };
-    settings = {
-      init.defaultBranch = "main";
-    };
+  nixpkgs = {
+    overlays = [
+      inputs.self.overlays.unstable-packages
+    ];
+
+    config.allowUnfree = true;
   };
 
-  sops.secrets = {
-    private_key = {
-      sopsFile = ../../secrets/nixos_ssh.yaml;
-      path = "${config.home.homeDirectory}/.ssh/id_ed25519";
-    };
-
-    borg_password.sopsFile = ../../secrets/borg.yaml;
-  };
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
 }

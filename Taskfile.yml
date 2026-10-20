@@ -34,6 +34,13 @@ tasks:
     # The sudo rule for this command is declared in the NixOS configuration.
     cmd: /run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild switch --flake .#{{.HOST}} --max-jobs {{.MAX_JOBS}} --cores {{.CORES}} --accept-flake-config
 
+  test:
+    desc: Test rebuild the NixOS system config
+    summary: Test rebuild a system configuration for the current system
+    # This task is also called by the non-interactive user systemd service.
+    # The sudo rule for this command is declared in the NixOS configuration.
+    cmd: /run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild test --flake .#{{.HOST}} --max-jobs {{.MAX_JOBS}} --cores {{.CORES}} --accept-flake-config
+
   server_test:
     cmd: NIX_SSHOPTS="-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes" /run/current-system/sw/bin/nixos-rebuild test --sudo --flake .#server --build-host server --target-host server
   server_switch:

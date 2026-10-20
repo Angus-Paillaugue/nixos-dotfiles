@@ -37,16 +37,19 @@
     sops-nix.url = "github:Mic92/sops-nix";
   };
 
-  outputs = inputs:
+  outputs =
+    inputs:
     let
-      mkNixosConfiguration = { system, name }: inputs.nixpkgs.lib.nixosSystem {
-        system = system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/${name}/configuration.nix
-          inputs.home-manager.nixosModules.default
-        ];
-      };
+      mkNixosConfiguration =
+        { system, name }:
+        inputs.nixpkgs.lib.nixosSystem {
+          system = system;
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/${name}/configuration.nix
+            inputs.home-manager.nixosModules.default
+          ];
+        };
     in
     {
       overlays = import ./overlays { inherit inputs; };

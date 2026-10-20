@@ -1,26 +1,13 @@
 {
   config,
   pkgs,
-  lib,
   inputs,
   ...
 }:
 let
-  zfsCompatibleKernelPackages = lib.filterAttrs (
-    name: kernelPackages:
-    (builtins.match "linux_[0-9]+_[0-9]+" name) != null
-    && (builtins.tryEval kernelPackages).success
-    && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
-    && (builtins.tryEval kernelPackages.nvidiaPackages.production.mod).success
-    && (!kernelPackages.nvidiaPackages.production.mod.meta.broken)
-    # NVIDIA 595 currently does not build against the development 7.x kernels.
-    && (lib.versionOlder kernelPackages.kernel.version "7.0")
-  ) pkgs.linuxKernel.packages;
-  latestKernelPackage = lib.last (
-    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues zfsCompatibleKernelPackages
-    )
-  );
+  # TODO: Fix the hard pinned kernel version
+  # This is here because ZFS and Nvidi do not know how to behave...
+  latestKernelPackage = pkgs.linuxKernel.packages.linux_6_18;
 in
 {
   imports = [
@@ -128,8 +115,14 @@ in
 
   services = {
     zfs = {
-      autoScrub.enable = true;
-      trim.enable = true;
+      autoScrub = {
+        enable = true;
+        interval = "weekly";
+      };
+      trim = {
+        enable = true;
+        interval = "weekly";
+      };
     };
     openssh = {
       enable = true;
@@ -182,7 +175,6 @@ in
       enable = true;
       port = 9100;
     };
-
     sunshine = {
       enable = true;
       autoStart = true;
@@ -194,7 +186,7 @@ in
   virtualisation.docker = {
     enable = true;
     enableOnBoot = true;
-    enableNvidia = true;
+    daemon.settings.features.cdi = true;
   };
 
   users.users = {

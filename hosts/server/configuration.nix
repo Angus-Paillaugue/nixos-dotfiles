@@ -95,13 +95,15 @@ in
   };
 
   hardware = {
-    graphics.enable = true;
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
     nvidia = {
       open = true;
       modesetting.enable = true;
       nvidiaSettings = true;
     };
-    # TODO: Fix cdi not behaving
     nvidia-container-toolkit.enable = true;
   };
 
@@ -177,6 +179,11 @@ in
       alsa.support32Bit = true;
       pulse.enable = true;
     };
+    prometheus.exporters.node = {
+      enable = true;
+      port = 9100;
+    };
+
     sunshine = {
       enable = true;
       autoStart = true;
@@ -188,6 +195,7 @@ in
   virtualisation.docker = {
     enable = true;
     enableOnBoot = true;
+    enableNvidia = true;
   };
 
   users.users = {
@@ -230,6 +238,7 @@ in
     wget
     jq
     btop
+    nvtopPackages.nvidia
   ];
 
   programs = {

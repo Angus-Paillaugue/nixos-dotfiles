@@ -133,16 +133,11 @@ in
     };
     openssh = {
       enable = true;
-      settings.PermitRootLogin = "yes";
+      settings = {
+        PermitRootLogin = "prohibit-password";
+        PasswordAuthentication = false;
+      };
     };
-    # TODO: Fix openssh + tailscale
-    # openssh = {
-    #   enable = true;
-    #   settings = {
-    #     PermitRootLogin = "prohibit-password";
-    #     PasswordAuthentication = false;
-    #   };
-    # };
     tailscale = {
       enable = true;
       useRoutingFeatures = "server";

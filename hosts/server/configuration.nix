@@ -181,6 +181,30 @@ in
       capSysAdmin = true;
       openFirewall = true;
     };
+    samba = {
+      enable = true;
+      securityType = "user";
+      openFirewall = true;
+      settings = {
+        global = {
+          "workgroup" = "WORKGROUP";
+          "server string" = "smbnix";
+          "netbios name" = "smbnix";
+          "security" = "user";
+          "guest account" = "nobody";
+          "map to guest" = "bad user";
+        };
+        "backups" = {
+          "path" = "/mnt/storage/backups";
+          "browseable" = "yes";
+          "read only" = "no";
+          "guest ok" = "no";
+          "create mask" = "0644";
+          "directory mask" = "0755";
+          "valid users" = "backups";
+        };
+      };
+    };
   };
 
   virtualisation.docker = {
@@ -206,6 +230,10 @@ in
         (builtins.readFile ../../ssh/nixos.pub)
       ];
       extraGroups = [ "docker" ];
+    };
+    "backups" = {
+      isNormalUser = true;
+      description = "Backups";
     };
   };
 

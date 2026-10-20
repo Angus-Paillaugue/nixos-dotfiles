@@ -36,11 +36,25 @@
     ];
   };
 
-  # ZFS mirror
   fileSystems."/mnt/storage" = {
     device = "tank";
     fsType = "zfs";
     options = [ "zfsutil" ];
+  };
+
+  fileSystems."/mnt/ssd" = {
+    device = "/dev/disk/by-uuid/aab6e356-b668-4006-bdf0-b3f1e4217b05";
+    fsType = "ext4";
+  };
+
+  fileSystems."/mnt/hdd" = {
+    device = "/dev/disk/by-uuid/8806650c-82ec-4667-a089-501a9b304d0d";
+    fsType = "ext4";
+  };
+
+  fileSystems."/mnt/hdd2" = {
+    device = "/dev/disk/by-uuid/12aa13ab-fce4-453b-9c52-6347566e2683";
+    fsType = "ext4";
   };
 
   swapDevices = [

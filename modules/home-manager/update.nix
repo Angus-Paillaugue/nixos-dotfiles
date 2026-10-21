@@ -40,7 +40,7 @@ let
       log "Starting system update..."
       ${pkgs.libnotify}/bin/notify-send -a "$script_name" "Starting system update..."
       log "Running update task..."
-      ${pkgs.go-task}/bin/task update > "$log_file" 2>&1
+      ./task update > "$log_file" 2>&1
       # Commit update to git and push to remote
       log "Committing update to git..."
       ${pkgs.git}/bin/git commit -am "chore: Update ($(date +%Y/%m/%d-%H:%M:%S))" > "$log_file" 2>&1

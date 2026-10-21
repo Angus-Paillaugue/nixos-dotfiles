@@ -1,5 +1,5 @@
 {
-  home.file.".ssh/id_ed25519.pub".source = ../../../../ssh/nixos.pub;
+  home.file.".ssh/id_ed25519.pub".source = ../../nixos.pub;
 
   programs = {
     ssh = {

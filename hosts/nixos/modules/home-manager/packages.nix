@@ -22,7 +22,6 @@
     gnumake
     eza
     bat
-    go-task
     unstablePkgs.bun
     moonlight-qt
     nwg-displays

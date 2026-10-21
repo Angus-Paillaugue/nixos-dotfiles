@@ -19,7 +19,7 @@
     "root" = {
       shell = pkgs.fish;
       openssh.authorizedKeys.keys = [
-        (builtins.readFile ../../../../ssh/nixos.pub)
+        (builtins.readFile ../../../nixos/nixos.pub)
       ];
       extraGroups = [ "docker" ];
     };

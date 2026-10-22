@@ -1,6 +1,5 @@
 {
   pkgs,
-  inputs,
   ...
 }:
 
@@ -9,13 +8,7 @@
   home.homeDirectory = "/home/gaming";
   home.stateVersion = "25.11";
 
-  nixpkgs = {
-    overlays = [
-      inputs.self.overlays.unstable-packages
-    ];
-
-    config.allowUnfree = true;
-  };
+  nixpkgs.config.allowUnfree = true;
 
   imports = [
     ../../modules/home-manager

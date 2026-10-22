@@ -48,12 +48,11 @@
           modules = [
             ./hosts/${name}/configuration.nix
             inputs.home-manager.nixosModules.default
+            (import ./overlays { inherit inputs; })
           ];
         };
     in
     {
-      overlays = import ./overlays { inherit inputs; };
-
       nixosConfigurations = {
         nixos = mkNixosConfiguration {
           system = "x86_64-linux";

@@ -18,6 +18,7 @@
   };
 
   home-manager = {
+    useGlobalPkgs = true;
     extraSpecialArgs = {
       inherit inputs;
       hostName = config.networking.hostName;

@@ -1,7 +1,6 @@
 {
   config,
   hostName,
-  inputs,
   ...
 }:
 
@@ -58,14 +57,6 @@
   fonts.fontconfig.enable = true;
 
   targets.genericLinux.nixGL.vulkan.enable = true;
-
-  nixpkgs = {
-    overlays = [
-      inputs.self.overlays.unstable-packages
-    ];
-
-    config.allowUnfree = true;
-  };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

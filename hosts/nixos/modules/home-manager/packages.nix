@@ -22,7 +22,7 @@
     gnumake
     eza
     bat
-    unstablePkgs.bun
+    pkgs.unstablePkgs.bun
     moonlight-qt
     nwg-displays
     nwg-look

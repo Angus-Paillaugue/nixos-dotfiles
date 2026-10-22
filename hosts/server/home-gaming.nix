@@ -8,8 +8,6 @@
   home.homeDirectory = "/home/gaming";
   home.stateVersion = "25.11";
 
-  nixpkgs.config.allowUnfree = true;
-
   imports = [
     ../../modules/home-manager
   ];

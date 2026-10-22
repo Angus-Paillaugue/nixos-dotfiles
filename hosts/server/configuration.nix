@@ -62,8 +62,6 @@ in
     git.enable = true;
   };
 
-  nixpkgs.config.allowUnfree = true;
-
   # Nix garbage collection keeps 14 days old generations instead of 7, just because I can
   nixConfig.gc.keepDays = 14;
 

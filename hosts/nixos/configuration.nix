@@ -1,6 +1,5 @@
 {
   pkgs,
-  inputs,
   ...
 }:
 {
@@ -52,8 +51,6 @@
       config.safe.directory = [ "/home/angus/.config/home-manager" ];
     };
   };
-
-  nixpkgs.config.allowUnfree = true;
 
   system.stateVersion = "25.11";
 }

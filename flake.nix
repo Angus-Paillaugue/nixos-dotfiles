@@ -29,18 +29,9 @@
         home-manager.follows = "home-manager";
       };
     };
-    helium = {
-      url = "github:AlvaroParker/helium-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    noctalia = {
-      url = "github:noctalia-dev/noctalia/cachix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    helium.url = "github:AlvaroParker/helium-nix";
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs =
@@ -55,6 +46,11 @@
             ./hosts/${name}/configuration.nix
             inputs.home-manager.nixosModules.default
             (import ./overlays { inherit inputs; })
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              nixpkgs.config.allowUnfree = true;
+            }
           ];
         };
     in

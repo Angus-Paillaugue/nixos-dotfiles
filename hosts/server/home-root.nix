@@ -11,6 +11,8 @@
     ../../modules/home-manager
   ];
 
+  home.file.".hushlogin".text = "";
+
   # Modules
   fastfetch.enable = true;
   starship.enable = true;

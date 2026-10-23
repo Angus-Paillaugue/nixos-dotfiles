@@ -28,7 +28,6 @@
       description = "Backups";
     };
   };
-  users.motd = "Welcome to ${config.networking.hostName}!";
 
   home-manager = {
     extraSpecialArgs = {

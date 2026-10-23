@@ -52,5 +52,10 @@
     };
   };
 
+  greeter.noctalia = {
+    enable = true;
+    passwordless-sync-users = [ "angus" ];
+  };
+
   system.stateVersion = "25.11";
 }

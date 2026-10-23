@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env bash
 
 # Kill any other instances of this script to prevent conflicts
 for pid in $(pgrep -f "lid-monitor.sh"); do
@@ -10,11 +10,16 @@ done
 LID_PATH="/proc/acpi/button/lid/LID0/state"
 MONITOR_NAME="eDP-1"
 LOG_FILE="/tmp/lid-monitor.log"
+echo "" > "$LOG_FILE"
 
-echo "$(date): Starting lid-monitor..." > "$LOG_FILE"
+function log {
+  echo "$(date): $1" >> "$LOG_FILE"
+}
+
+log "Starting lid-monitor"
 
 if [[ ! -f "$LID_PATH" ]]; then
-  echo "$(date): Lid path $LID_PATH not found. Exiting." >> "$LOG_FILE"
+  log "Lid path $LID_PATH not found. Exiting."
   exit 1
 fi
 
@@ -45,12 +50,12 @@ while true; do
   IS_ACTIVE=$(hyprctl monitors -j | jq -r ".[] | select(.name == \"$MONITOR_NAME\") | .name")
 
   if [[ "$TARGET_STATE" == "closed" && -n "$IS_ACTIVE" ]]; then
-    echo "$(date): Monitor $MONITOR_NAME is active but should be closed (Reload detected?). Disabling." >> "$LOG_FILE"
+    log "Monitor $MONITOR_NAME is active but should be closed (Reload detected?). Disabling."
     hyprctl eval "hl.monitor({ output = \"$MONITOR_NAME\", disabled = true })"
     # hyprctl keyword monitor "$MONITOR_NAME,disable"
     LAST_STATE="closed"
   elif [[ "$TARGET_STATE" == "open" && -z "$IS_ACTIVE" ]]; then
-    echo "$(date): Monitor $MONITOR_NAME is inactive but should be open. Enabling." >> "$LOG_FILE"
+    log "Monitor $MONITOR_NAME is inactive but should be open. Enabling."
     # hyprctl keyword monitor "$MONITOR_NAME,preferred,auto,1"
     hyprctl eval "hl.monitor({ output = \"$MONITOR_NAME\", disabled = false })"
     # hyprctl dispatch dpms on "$MONITOR_NAME"

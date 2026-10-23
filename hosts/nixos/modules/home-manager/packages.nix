@@ -46,5 +46,6 @@
     opentofu
     hyprpicker
     bruno
+    lsof
   ];
 }

@@ -13,6 +13,8 @@
     };
   };
 
+  greeter.gdm.enable = true;
+
   services = {
     xserver = {
       videoDrivers = [ "nvidia" ];
@@ -22,15 +24,9 @@
         variant = "";
       };
     };
-    displayManager = {
-      gdm = {
-        enable = true;
-        autoSuspend = false;
-      };
-      autoLogin = {
-        enable = true;
-        user = "gaming";
-      };
+    displayManager.autoLogin = {
+      enable = true;
+      user = "gaming";
     };
     desktopManager.gnome.enable = true;
     gnome = {

@@ -41,33 +41,17 @@
   outputs =
     inputs:
     let
-      mkNixosConfiguration =
-        { system, name }:
-        inputs.nixpkgs.lib.nixosSystem {
-          system = system;
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./hosts/${name}/configuration.nix
-            inputs.home-manager.nixosModules.default
-            (import ./overlays { inherit inputs; })
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              nixpkgs.config.allowUnfree = true;
-            }
-          ];
-        };
+      lib = inputs.nixpkgs.lib.extend (
+        self: _: {
+          myLib = import ./lib {
+            inherit inputs;
+            lib = self;
+          };
+        }
+      );
     in
     {
-      nixosConfigurations = {
-        nixos = mkNixosConfiguration {
-          system = "x86_64-linux";
-          name = "nixos";
-        };
-        server = mkNixosConfiguration {
-          system = "x86_64-linux";
-          name = "server";
-        };
-      };
+      nixosConfigurations = import ./hosts/hosts.nix { inherit lib; };
+      formatter.x86_64-linux = inputs.nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
     };
 }

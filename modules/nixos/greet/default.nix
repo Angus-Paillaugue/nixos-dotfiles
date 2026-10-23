@@ -1,9 +1,9 @@
 { lib, ... }:
 {
-  imports = [
-    ./gdm.nix
-    ./noctalia-greeter.nix
-  ];
+  imports = lib.myLib.listNixRecursively {
+    source = ./.;
+    omit = [ ./default.nix ];
+  };
 
   options = {
     greeter = {
@@ -20,7 +20,7 @@
         };
         passwordless-sync-users = lib.mkOption {
           type = lib.types.listOf lib.types.str;
-          default = [];
+          default = [ ];
           description = "List of users to sync passwordless login with noctalia greeter";
         };
       };

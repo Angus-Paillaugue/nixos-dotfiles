@@ -7,7 +7,6 @@ local function workspace_in_group(i)
   return math.floor((curr - 1) / workspaceGroupSize) * workspaceGroupSize + i
 end
 
-
 hl.bind(mainMod .. "+ SUPER_L", hl.dsp.exec_cmd(ipc .. "panel-toggle launcher"), { release = true })
 hl.bind(mainMod .. "+ comma", hl.dsp.exec_cmd(ipc .. "settings-toggle"))
 hl.bind(mainMod .. "+ I", hl.dsp.exec_cmd(ipc .. "settings-toggle"))
@@ -26,12 +25,9 @@ hl.bind(mainMod .. "+ J", hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. "+L", hl.dsp.exec_cmd(ipc .. "session lock"))
 
 -- Close window
-hl.bind("ALT + F4",
-  function()
-    hl.exec_cmd(
-      "notify-send \"Wrong close keybind\" \"Super+Q to close. Use Alt+F4 for Windows VMs\" -a Hyprland")
-  end,
-  { non_consuming = true })
+hl.bind("ALT + F4", function()
+  hl.exec_cmd('notify-send "Wrong close keybind" "Super+Q to close. Use Alt+F4 for Windows VMs" -a Hyprland')
+end, { non_consuming = true })
 hl.bind(mainMod .. "+ Q", hl.dsp.window.close())
 hl.bind(mainMod .. "+ SHIFT + ALT + Q", hl.dsp.exec_cmd("hyprctl kill"))
 
@@ -143,8 +139,7 @@ for i = 1, 4 do
 end
 
 -- Special workspace
-hl.bind(mainMod .. "+ ALT + S",
-  hl.dsp.window.move({ workspace = "special:special", follow = false }))
+hl.bind(mainMod .. "+ ALT + S", hl.dsp.window.move({ workspace = "special:special", follow = false }))
 hl.bind("CTRL + SUPER + S", hl.dsp.workspace.toggle_special("special"))
 
 -- Clipboard history
@@ -161,7 +156,10 @@ hl.bind(mainMod .. "+ C", hl.dsp.exec_cmd("zeditor"))
 hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd("kitty -1 fish -c btop"))
 
 -- Others
-hl.bind(mainMod .. "+ Space", hl.dsp.exec_cmd("$HOME/.config/home-manager/modules/home-manager/hyprland/scripts/toggle-layout.sh"))
+hl.bind(
+  mainMod .. "+ Space",
+  hl.dsp.exec_cmd("$HOME/.config/home-manager/modules/home-manager/hyprland/scripts/toggle-layout.sh")
+)
 hl.bind(mainMod .. "+ F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 
 hl.define_submap("virtual-machine", function()

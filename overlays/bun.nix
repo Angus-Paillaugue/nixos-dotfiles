@@ -29,8 +29,7 @@ in
   bun = prev.bun.overrideAttrs (old: {
     inherit version;
     src =
-      platformSources.${prev.stdenv.hostPlatform.system}
-        or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
+      platformSources.${prev.stdenv.hostPlatform.system} or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
     passthru = old.passthru // {
       sources = platformSources;
     };

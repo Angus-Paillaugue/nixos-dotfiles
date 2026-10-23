@@ -2,8 +2,7 @@
   mkNixosConfiguration =
     { system, name }:
     inputs.nixpkgs.lib.nixosSystem {
-      system = system;
-      inherit lib;
+      inherit system lib;
       specialArgs = { inherit inputs; };
       modules = [
         ../hosts/${name}/configuration.nix

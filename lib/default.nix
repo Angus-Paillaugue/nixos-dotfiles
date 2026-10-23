@@ -20,6 +20,4 @@ in
 {
   inherit listNixRecursively;
 }
-// builtins.foldl' (
-  functions: file: functions // import file { inherit inputs lib; }
-) { } libraryFiles
+// builtins.foldl' (functions: file: functions // import file { inherit inputs lib; }) { } libraryFiles

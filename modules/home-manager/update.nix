@@ -41,11 +41,15 @@ let
       ${pkgs.libnotify}/bin/notify-send -a "$script_name" "Starting system update..."
       log "Running update task..."
       ./task update > "$log_file" 2>&1
-      # Commit update to git and push to remote
-      log "Committing update to git..."
-      ${pkgs.git}/bin/git commit -am "chore: Update ($(date +%Y/%m/%d-%H:%M:%S))" > "$log_file" 2>&1
-      log "Pushing update to remote..."
-      ${pkgs.git}/bin/git push origin main > "$log_file" 2>&1
+
+      if [ -n "$(${pkgs.git}/bin/git status --porcelain)" ]; then
+        log "Committing update to git..."
+        ${pkgs.git}/bin/git commit -am "chore: Update ($(date +%Y/%m/%d-%H:%M:%S))" > "$log_file" 2>&1
+        log "Pushing update to remote..."
+        ${pkgs.git}/bin/git push origin main > "$log_file" 2>&1
+      else
+        log "No changes to commit."
+      fi
       log "System update finished successfully."
       ${pkgs.libnotify}/bin/notify-send -a "$script_name" "Finished system update"
     '';

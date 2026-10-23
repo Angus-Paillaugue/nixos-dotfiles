@@ -15,10 +15,6 @@ let
         indent_width = 2;
       };
     };
-    programs.toml-sort = {
-      enable = true;
-      all = true;
-    };
   };
 
   systems = [

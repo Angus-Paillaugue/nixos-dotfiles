@@ -17,16 +17,16 @@ let
         echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" >> "$log_file"
       }
 
+      function notify() {
+        ${pkgs.libnotify}/bin/notify-send --app-name="$script_name" "$*"
+      }
+
       on_exit() {
         status=$?
         trap - EXIT
 
         if (( status != 0 )); then
-          resp=$(${pkgs.libnotify}/bin/notify-send \
-            -u critical \
-            -a "$script_name" \
-            "System update failed (exit status $status)" \
-            -A "See logs")
+          resp=$(notify -u critical "System update failed (exit status $status)" -A "See logs")
           if [ "$resp" = "0" ]; then
             ${pkgs.kitty}/bin/kitty --hold bash -c "bat -l log $log_file"
           fi
@@ -38,7 +38,7 @@ let
 
       cd "${config_dir}" || exit 1
       log "Starting system update..."
-      ${pkgs.libnotify}/bin/notify-send -a "$script_name" "Starting system update..."
+      notify "Starting system update..."
       log "Running update task..."
       ./task update > "$log_file" 2>&1
 
@@ -51,7 +51,7 @@ let
         log "No changes to commit."
       fi
       log "System update finished successfully."
-      ${pkgs.libnotify}/bin/notify-send -a "$script_name" "Finished system update"
+      notify "Finished system update"
     '';
 in
 {
@@ -69,6 +69,8 @@ in
   };
 
   config = lib.mkIf config.update.enable {
+    home.packages = with pkgs; [ libnotify git kitty bat ];
+
     systemd.user = {
       timers."update" = {
         Install.WantedBy = [ "timers.target" ];

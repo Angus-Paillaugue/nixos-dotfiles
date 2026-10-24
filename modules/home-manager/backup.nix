@@ -76,6 +76,8 @@ in
   };
 
   config = lib.mkIf config.backup.enable {
+    home.packages = with pkgs; [ libnotify borgbackup kitty bat ];
+
     systemd.user = {
       timers."backup" = {
         Install.WantedBy = [ "timers.target" ];

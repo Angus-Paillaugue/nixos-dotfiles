@@ -5,7 +5,6 @@
 }:
 {
   options = {
-
     nixConfig = {
       enable = lib.mkOption {
         type = lib.types.bool;

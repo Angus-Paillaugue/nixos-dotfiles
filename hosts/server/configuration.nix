@@ -60,6 +60,7 @@ in
   programs = {
     fish.enable = true;
     git.enable = true;
+    nix-ld.enable = true;
   };
 
   # Nix garbage collection keeps 14 days old generations instead of 7, just because I can

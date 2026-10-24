@@ -14,27 +14,29 @@
   };
 
   config = lib.mkIf config.fish.enable {
-    home.packages =
-      with pkgs;
-      [
-        eza
-        bat
-      ]
-      ++ lib.optional config.starship.enable pkgs.starship;
-
     programs.fish = {
       enable = true;
-      interactiveShellInit = /* fish */ ''
+      shellInit = /* fish */ ''
         set fish_greeting;
-        ${if config.starship.enable then "starship init fish | source" else ""}
-        alias create-shell="~/.config/home-manager/utils/create-shell.sh $argv"
-        alias c="clear"
-        alias h="cd ~"
-        alias ls="eza --icons --group-directories-first --color=always --classify"
-        alias ll="eza -l --icons --group-directories-first --color=always --git"
-        alias la="eza -la --icons --group-directories-first --color=always --git"
-        alias cat="bat --color always --theme gruvbox-dark"
+        ${if config.starship.enable then "${lib.getExe pkgs.starship} init fish | source" else ""}
+
+        function ls
+          ${lib.getExe pkgs.eza} --icons --group-directories-first --color=always --classify $argv
+        end
+        function ll
+          ${lib.getExe pkgs.eza} -l --icons --group-directories-first --color=always --git $argv
+        end
+        function la
+          ${lib.getExe pkgs.eza} -la --icons --group-directories-first --color=always --git $argv
+        end
+        function cat
+          ${lib.getExe pkgs.bat} --color always ${if config.noctalia.enable then "--theme=\"noctalia\"" else ""} $argv
+        end
       '';
+      shellAliases = {
+        c = "clear";
+        h = "cd ~";
+      };
     };
   };
 }

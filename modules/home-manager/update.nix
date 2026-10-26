@@ -69,7 +69,12 @@ in
   };
 
   config = lib.mkIf config.update.enable {
-    home.packages = with pkgs; [ libnotify git kitty bat ];
+    home.packages = with pkgs; [
+      libnotify
+      git
+      kitty
+      bat
+    ];
 
     systemd.user = {
       timers."update" = {

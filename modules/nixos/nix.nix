@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  inputs,
   ...
 }:
 {
@@ -61,6 +62,8 @@
         dates = config.nixConfig.gc.dates;
         options = "--delete-older-than ${lib.toString config.nixConfig.gc.keepDays}d";
       };
+
+      nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
     };
   };
 }

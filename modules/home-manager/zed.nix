@@ -33,6 +33,9 @@
         "fish"
         "comment"
         "dockerfile"
+        "sql"
+        "terraform"
+        "xml"
       ];
       userKeymaps = [
         {
@@ -84,6 +87,7 @@
         }
       ];
       userSettings = {
+        format_on_save = "on";
         disable_ai = false;
         show_edit_predictions = true;
         language_models = {
@@ -155,7 +159,6 @@
         };
         agent = {
           default_profile = "ask";
-          sidebar_side = "right";
           dock = "right";
           model_parameters = [ ];
         };
@@ -267,6 +270,33 @@
                 ];
               };
             };
+          };
+          nixd = {
+            settings = {
+              nixpkgs = {
+                expr = "import <nixpkgs> { }";
+              };
+              formatting = {
+                command = [ "nixfmt" ];
+              };
+              options = {
+                nixos = {
+                  expr = "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.nixos.options";
+                };
+                "home-manager" = {
+                  "expr" =
+                    "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.nixos.options.home-manager.users.type.getSubOptions []";
+                };
+              };
+            };
+          };
+        };
+        languages = {
+          "Nix" = {
+            language_servers = [
+              "!nil"
+              "nixd"
+            ];
           };
         };
       };

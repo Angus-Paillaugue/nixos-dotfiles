@@ -33,6 +33,9 @@
         "fish"
         "comment"
         "dockerfile"
+        "sql"
+        "terraform"
+        "xml"
       ];
       userKeymaps = [
         {
@@ -155,7 +158,6 @@
         };
         agent = {
           default_profile = "ask";
-          sidebar_side = "right";
           dock = "right";
           model_parameters = [ ];
         };
@@ -267,6 +269,14 @@
                 ];
               };
             };
+          };
+        };
+        languages = {
+          "Nix" = {
+            language_servers = [
+              "nil"
+              "!nixd"
+            ];
           };
         };
       };

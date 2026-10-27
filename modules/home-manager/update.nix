@@ -39,7 +39,6 @@ let
       cd "${config_dir}" || exit 1
       log "Starting system update..."
       notify "Starting system update..."
-      log "Running update task..."
       ./task update > "$log_file" 2>&1
 
       if [ -n "$(${pkgs.git}/bin/git status --porcelain)" ]; then

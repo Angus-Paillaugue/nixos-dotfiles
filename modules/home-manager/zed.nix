@@ -290,6 +290,16 @@
               };
             };
           };
+          yaml-language-server = {
+            settings = {
+              yaml = {
+                schemas = {
+                  "https://www.schemastore.org/github-workflow.json" = [ ".github/workflows/*.yml" ];
+                  "https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json" = "compose.yml";
+                };
+              };
+            };
+          };
         };
         languages = {
           "Nix" = {

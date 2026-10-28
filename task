@@ -13,6 +13,8 @@ function help() {
   echo "  clean-garbage           - Clean up old generations and garbage"
   echo "  clean-store             - Clean up Nix store"
   echo "  clean                   - Clean up old generations, garbage, and Nix store"
+  echo "  fmt                     - Format Nix files using nix fmt"
+  echo "  iso                     - Build ISO for the specified host"
   echo "Options:"
   echo "  -h, --host <hostname>   - Specify the target host (default: current host)"
   exit 1
@@ -41,10 +43,10 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-
-function command_log() {
-  local command="$1"
+function exec_and_log() {
+  local command="$@"
   echo -e "Running command: \e[1;32m$command\e[0m"
+  eval "$command"
 }
 
 function get_cores() {
@@ -74,34 +76,39 @@ function nixos_rebuild() {
   local COMMAND_ARGS="--max-jobs $(get_jobs) --cores $(get_cores) --accept-flake-config --flake .#${host} ${EXTRA_HOST_ARGS[$host]}"
   echo "Running nixos-rebuild test for ${host}"
   if [[ $host == $current_host ]]; then
-    command_log "/run/wrappers/bin/sudo -n /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}"
-    /run/wrappers/bin/sudo -n \
+    exec_and_log /run/wrappers/bin/sudo -n \
       /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}
   else
-    command_log "NIX_SSHOPTS='-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes\" /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}"
-    NIX_SSHOPTS='-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+    exec_and_log NIX_SSHOPTS='-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
     /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}
   fi
 }
 
 function update() {
   echo "Updating flake inputs..."
-  nix flake update
-  nixos_rebuild "switch"
+  exec_and_log nix flake update
+  exec_and_log nixos_rebuild "switch"
 }
 
 function hardware() {
-  sudo nixos-generate-config --dir ./hosts/$host
+  echo "Generating hardware configuration for ${host}..."
+  exec_and_log sudo nixos-generate-config --dir ./hosts/$host
 }
 
 function clean_garbage() {
   echo "Cleaning up old generations and garbage..."
-  sudo nix-collect-garbage -d
+  exec_and_log sudo nix-collect-garbage -d
 }
 
 function clean_store() {
   echo "Cleaning up Nix store..."
-  sudo nix-store --gc  
+  exec_and_log sudo nix-store --gc  
+}
+
+function iso() {
+  echo "Building ISO for ${host}..."
+  exec_and_log nix build .#nixosConfigurations.$host-iso.config.system.build.isoImage
+  echo "ISO built at: $(realpath result/iso/$host-*.iso)"
 }
 
 
@@ -130,6 +137,9 @@ case $command in
     ;;
   fmt)
     nix fmt
+    ;;
+  iso)
+    iso
     ;;
   *)
     echo "Unknown command: $command"

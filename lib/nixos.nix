@@ -1,6 +1,10 @@
 { inputs, lib, ... }: {
   mkNixosConfiguration =
-    { system, name, extraModules ? [] }:
+    {
+      system,
+      name,
+      extraModules ? [ ],
+    }:
     inputs.nixpkgs.lib.nixosSystem {
       inherit system lib;
       specialArgs = { inherit inputs; };
@@ -13,6 +17,7 @@
           home-manager.useUserPackages = true;
           nixpkgs.config.allowUnfree = true;
         }
-      ] ++ extraModules;
+      ]
+      ++ extraModules;
     };
 }

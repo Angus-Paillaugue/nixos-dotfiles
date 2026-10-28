@@ -44,8 +44,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 function exec_and_log() {
-  local command="$@"
-  echo -e "Running command: \e[1;32m$command\e[0m"
+  local command="$(printf '%q ' "$@")"
+  echo -e "\e[1;32m$command\e[0m"
   eval "$command"
 }
 
@@ -74,12 +74,12 @@ fi
 function nixos_rebuild() {
   local command="$1"
   local COMMAND_ARGS="--max-jobs $(get_jobs) --cores $(get_cores) --accept-flake-config --flake .#${host} ${EXTRA_HOST_ARGS[$host]}"
-  echo "Running nixos-rebuild test for ${host}"
+  echo "Running nixos-rebuild $command for ${host}"
   if [[ $host == $current_host ]]; then
     exec_and_log /run/wrappers/bin/sudo -n \
       /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}
   else
-    exec_and_log NIX_SSHOPTS='-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+    exec_and_log NIX_SSHOPTS="-i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes" \
     /run/current-system/sw/bin/nixos-rebuild $command ${COMMAND_ARGS}
   fi
 }
@@ -87,7 +87,7 @@ function nixos_rebuild() {
 function update() {
   echo "Updating flake inputs..."
   exec_and_log nix flake update
-  exec_and_log nixos_rebuild "switch"
+  nixos_rebuild "switch"
 }
 
 function hardware() {

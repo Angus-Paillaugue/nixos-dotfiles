@@ -52,9 +52,7 @@
       );
     in
     {
-      nixosConfigurations =
-        (import ./hosts/hosts.nix { inherit lib; })
-        // (import ./hosts/iso.nix { inherit lib inputs; });
+      nixosConfigurations = (import ./hosts/hosts.nix { inherit lib; }) // (import ./hosts/iso.nix { inherit lib inputs; });
     }
     // (import ./treefmt.nix { inherit inputs; });
 }

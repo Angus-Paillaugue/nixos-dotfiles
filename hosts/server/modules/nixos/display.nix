@@ -1,4 +1,4 @@
-{
+{ lib, ... }: {
   # DO NOT SLEEP
   systemd = {
     sleep.settings.Sleep = {
@@ -24,7 +24,8 @@
         variant = "";
       };
     };
-    displayManager.autoLogin = {
+    # lib.mkDefault is required because it can conflict with the cd/dvd ISO building defaults
+    displayManager.autoLogin = lib.mkDefault {
       enable = true;
       user = "gaming";
     };

@@ -499,6 +499,8 @@ copy_on_close        = false                       # Closing the editor copies t
 pipe_to_command      = false                       # pipe the PNG to a shell command on stdin
 pipe_command         = ""                          # annotator/uploader, e.g. "swappy -f -" or "satty -f -"
 
+[shell.greeter_sync]
+auto_sync = true
 
 #  ____      _                _
 # / ___|__ _| | ___ _ __   __| | __ _ _ __

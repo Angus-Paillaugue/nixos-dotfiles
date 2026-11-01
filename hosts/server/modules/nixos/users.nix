@@ -14,6 +14,9 @@
         "networkmanager"
         "wheel"
         "uinput"
+        "video"
+        "render"
+        "input"
       ];
     };
     "root" = {

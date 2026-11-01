@@ -27,6 +27,7 @@
   starship.enable = true;
   fastfetch.enable = true;
   helium.enable = true;
+  obsidian.enable = true;
   backup = {
     enable = true;
     target = "root@192.168.0.3:/mnt/storage/backups/${hostName}";

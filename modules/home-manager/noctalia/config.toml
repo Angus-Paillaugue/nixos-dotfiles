@@ -37,7 +37,7 @@ pure_black_dark = false             # anchor dark surfaces to true black (OLED);
 enable_builtin_templates = true
 builtin_ids = [ "btop", "gtk3", "gtk4", "hyprland", "kitty", "qt", "starship" ]
 enable_community_templates = true
-community_ids = [ "zen-browser", "fastfetch", "bat", "steam", "prismlauncher" ]     # fetched from api.noctalia.dev/templates, cached locally
+community_ids = [ "zen-browser", "fastfetch", "bat", "steam", "prismlauncher", "obsidian" ]     # fetched from api.noctalia.dev/templates, cached locally
 
 # ── Backdrop ──────────────────────────────────────────────────────────────────
 
@@ -242,8 +242,8 @@ thickness = 38
 background_opacity = 1.0
 radius_top_left = 0
 radius_top_right = 0
-radius_bottom_left = 12
-radius_bottom_right = 12
+radius_bottom_left = 18
+radius_bottom_right = 18
 margin_ends = 0
 margin_edge = 0
 concave_edge_corners = true

@@ -16,3 +16,9 @@ hl.layer_rule({
 })
 
 hl.workspace_rule({ workspace = "special:special", gaps_out = 30 })
+
+hl.window_rule({
+  match = { class = "md.obsidian.Obsidian", title = ".*Settings.*" },
+  float = true,
+  center = true,
+})

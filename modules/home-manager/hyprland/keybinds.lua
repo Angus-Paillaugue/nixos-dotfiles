@@ -153,6 +153,7 @@ hl.bind(mainMod .. "+ T", hl.dsp.exec_cmd("kitty -1"))
 hl.bind(mainMod .. "+ Z", hl.dsp.exec_cmd("zen-beta"))
 hl.bind(mainMod .. "+ E", hl.dsp.exec_cmd("nautilus"))
 hl.bind(mainMod .. "+ C", hl.dsp.exec_cmd("zeditor"))
+hl.bind(mainMod .. "+ O", hl.dsp.exec_cmd("obsidian"))
 hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd("kitty -1 fish -c btop"))
 
 -- Others

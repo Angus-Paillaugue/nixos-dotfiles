@@ -5,6 +5,6 @@ let
 in
 {
   services.serverBackup.services.obsidian = {
-    paths = [ "${obsidianDir}/douchdb-data" ];
+    paths = [ "${obsidianDir}/couchdb-data" ];
   };
 }

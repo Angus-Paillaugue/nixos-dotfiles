@@ -72,7 +72,7 @@ in
   services.serverBackup = {
     enable = true;
     dockerDir = "/mnt/storage/docker";
-    destination = "/mnt/hdd2/backups/test";
+    destination = "/mnt/hdd2/backups/docker";
   };
 
   system.stateVersion = "26.05";

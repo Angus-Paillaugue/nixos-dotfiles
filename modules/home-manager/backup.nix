@@ -54,6 +54,33 @@ let
         fi
       fi
     '';
+  mkPruneScript =
+    name: service_name: target:
+    pkgs.writeShellScript "${name}-prune" ''
+      script_name="Backup manager"
+      export BORG_PASSPHRASE="$(cat "${config.sops.secrets.borg_password.path}")"
+      function notify() {
+        ${pkgs.libnotify}/bin/notify-send --app-name="$script_name" "$*"
+      }
+      notify "Starting prune of ${name}..."
+      ${pkgs.borgbackup}/bin/borg prune \
+        --list \
+        --prefix '{hostname}-' \
+        --show-rc \
+        --keep-daily=7 \
+        --keep-weekly=4 \
+        --keep-monthly=6 \
+        "${target}"
+      return_code=$?
+      if [ $return_code -eq 0 ] || [ $return_code -eq 1 ]; then
+        notify "\"${name}\" prune completed successfully."
+      else
+        choice=$(notify "\"${name}\" prune failed. Check the logs for details." -A "View Logs")
+        if [ "$choice" = "0" ]; then
+          ${pkgs.kitty}/bin/kitty --hold bash -c "journalctl -xb --user-unit=${service_name} -n 50 --no-pager | bat -l log"
+        fi
+      fi
+    '';
 in
 {
   options.backup = {
@@ -88,40 +115,80 @@ in
     ];
 
     systemd.user = {
-      timers."backup" = {
-        Install.WantedBy = [ "timers.target" ];
-        Unit = {
-          Description = "Timer for backup service";
-          After = [ "sops-nix.service" ];
-          Wants = [ "sops-nix.service" ];
+      timers = {
+        "backup" = {
+          Install.WantedBy = [ "timers.target" ];
+          Unit = {
+            Description = "Timer for backup service";
+            After = [ "sops-nix.service" ];
+            Wants = [ "sops-nix.service" ];
+          };
+          Timer = {
+            Unit = "backup.service";
+            OnCalendar = "daily";
+            Persistent = true;
+            RandomizedDelaySec = "15m";
+          };
         };
-        Timer = {
-          Unit = "backup.service";
-          OnCalendar = "daily";
-          Persistent = true;
-          RandomizedDelaySec = "15m";
+        "backup-prune" = {
+          Install.WantedBy = [ "timers.target" ];
+          Unit = {
+            Description = "Timer for backup prune service";
+            After = [ "sops-nix.service" ];
+            Wants = [ "sops-nix.service" ];
+          };
+          Timer = {
+            Unit = "backup-prune.service";
+            OnCalendar = "weekly";
+            Persistent = true;
+            RandomizedDelaySec = "30m";
+          };
         };
       };
 
-      services."backup" = {
-        Unit = {
-          Description = "Daily Backup Script";
-          Wants = [
-            "network-online.target"
-            "sops-nix.service"
-          ]
-          ++ (if config.update.enable then [ "update.service" ] else [ ]);
-          After = [
-            "network-online.target"
-            "sops-nix.service"
-          ]
-          ++ (if config.update.enable then [ "update.service" ] else [ ]);
+      services = {
+        "backup" = {
+          Unit = {
+            Description = "Daily Backup Script";
+            Wants = [
+              "network-online.target"
+              "sops-nix.service"
+            ]
+            ++ (if config.update.enable then [ "update.service" ] else [ ]);
+            After = [
+              "network-online.target"
+              "sops-nix.service"
+            ]
+            ++ (if config.update.enable then [ "update.service" ] else [ ]);
+          };
+          Service = {
+            Type = "oneshot";
+            StandardOutput = "journal";
+            StandardError = "journal";
+            ExecStart = mkBackupScript hostName "backup" config.backup.target config.backup.toBackup;
+          };
         };
-        Service = {
-          Type = "oneshot";
-          StandardOutput = "journal";
-          StandardError = "journal";
-          ExecStart = mkBackupScript hostName "backup" config.backup.target config.backup.toBackup;
+
+        "backup-prune" = {
+          Unit = {
+            Description = "Weekly Backup Prune Script";
+            Wants = [
+              "network-online.target"
+              "sops-nix.service"
+              "backup.service"
+            ];
+            After = [
+              "network-online.target"
+              "sops-nix.service"
+              "backup.service"
+            ];
+          };
+          Service = {
+            Type = "oneshot";
+            StandardOutput = "journal";
+            StandardError = "journal";
+            ExecStart = mkPruneScript hostName "backup-prune" config.backup.target;
+          };
         };
       };
     };

@@ -6,12 +6,23 @@ in
 {
   # Restore : https://docs.goauthentik.io/sys-mgmt/ops/backup-restore/#restore
   services.serverBackup.services.authentik = {
-    paths = [ "${authentikDir}/export" "${authentikDir}/data" "${authentikDir}/custom-templates" ];
+    paths = [
+      "${authentikDir}/export"
+      "${authentikDir}/data"
+      "${authentikDir}/custom-templates"
+    ];
     preBackup = ''
-      set -Eeuo
+      set -Eeuo pipefail
 
       cd ${authentikDir}
-      ${pkgs.docker}/bin/docker exec -i --env-file ./.env $(${pkgs.docker}/bin/docker compose ps -q postgresql) /bin/bash -c 'PGPASSWORD=$POSTGRES_PASSWORD pg_dump --username $POSTGRES_USER $POSTGRES_DB' > ./export/dump.sql 
+      postgresContainer="$(${pkgs.docker}/bin/docker compose ps -q postgresql)"
+      if [ -z "$postgresContainer" ]; then
+        echo "Unable to determine the Authentik PostgreSQL container ID" >&2
+        exit 1
+      fi
+
+      ${pkgs.docker}/bin/docker compose exec -T postgresql \
+        sh -c 'pg_dump --username "$POSTGRES_USER" "$POSTGRES_DB"' > ./export/dump.sql
     '';
   };
 }

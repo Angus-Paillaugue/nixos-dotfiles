@@ -7,6 +7,7 @@
 let
   cfg = config.services.serverBackup;
   destination = cfg.destination;
+  paths = lib.flatten (lib.mapAttrsToList (_: service: service.paths) cfg.services);
   hookScript =
     phase: name: commands:
     pkgs.writeShellScript "server-backup-${name}-${phase}" ''
@@ -37,29 +38,31 @@ let
       ''
     )
   ) cfg.services;
-  serviceCopies = lib.mapAttrsToList (name: service: ''
-    serviceRoot="$backupRoot/${lib.escapeShellArg name}"
-    mkdir -p "$serviceRoot"
-    echo "Backing up ${lib.escapeShellArg name} to $serviceRoot"
-    ${lib.concatMapStringsSep "\n" (path: ''
-      if [ ! -e ${lib.escapeShellArg path} ]; then
-        echo "Backup path does not exist: ${lib.escapeShellArg path}" >&2
-        exit 1
-      fi
-      ${pkgs.coreutils}/bin/cp -a -- ${lib.escapeShellArg path} "$serviceRoot/"
-    '') service.paths}
-  '') cfg.services;
+  pathChecks = lib.concatMapStringsSep "\n" (path: ''
+    if [ ! -e ${lib.escapeShellArg path} ]; then
+      echo "Backup path does not exist: ${lib.escapeShellArg path}" >&2
+      exit 1
+    fi
+  '') paths;
 
   backupScript = pkgs.writeShellScript "server-backup" ''
     set -Eeuo pipefail
 
     ${lib.concatStringsSep "\n" serviceHooks}
 
-    backupRoot=${lib.escapeShellArg destination}/"$(date +%Y-%m-%d_%H-%M-%S)"
-    mkdir -p "$backupRoot"
-    echo "Backing up services to '$backupRoot'"
+    repository=${lib.escapeShellArg destination}
+    if [ ! -d "$repository" ]; then
+      echo "Borg repository does not exist: $repository" >&2
+      exit 1
+    fi
 
-    ${lib.concatStringsSep "\n" serviceCopies}
+    ${pathChecks}
+    ${pkgs.borgbackup}/bin/borg create \
+      --lock-wait 600 \
+      --compression zstd,3 \
+      --exclude-caches \
+      "$repository::backup-$(date +%Y-%m-%d_%H-%M-%S)" \
+      ${lib.concatMapStringsSep " " lib.escapeShellArg paths}
 
     ${lib.concatStringsSep "\n" serviceCleanupHooks}
   '';
@@ -82,7 +85,22 @@ in
     destination = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      description = "The destination directory for the backup archive. This must be a local path.";
+      description = "The local Borg repository receiving the backup archives.";
+    };
+
+    retention = {
+      daily = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 7;
+      };
+      weekly = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 4;
+      };
+      monthly = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 2;
+      };
     };
 
     services = lib.mkOption {
@@ -121,18 +139,42 @@ in
     ];
 
     systemd.services.server-backup = {
-      description = "Back up Docker service data to a directory";
+      description = "Back up Docker service data to Borg";
       wants = [ "network-online.target" ];
       after = [
         "network-online.target"
       ];
       path = [
+        pkgs.borgbackup
         pkgs.coreutils
         pkgs.findutils
       ];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = backupScript;
+      };
+    };
+
+    systemd.services.server-backup-prune = {
+      description = "Prune old Docker service Borg archives";
+      after = [ "server-backup.service" ];
+      requires = [ "server-backup.service" ];
+      path = [ pkgs.borgbackup ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = pkgs.writeShellScript "server-backup-prune" ''
+          set -Eeuo pipefail
+          repository=${lib.escapeShellArg destination}
+          ${pkgs.borgbackup}/bin/borg prune \
+            --list \
+            --lock-wait 600 \
+            --glob-archives 'backup-*' \
+            --keep-daily ${toString cfg.retention.daily} \
+            --keep-weekly ${toString cfg.retention.weekly} \
+            --keep-monthly ${toString cfg.retention.monthly} \
+            "$repository"
+          ${pkgs.borgbackup}/bin/borg compact --lock-wait 600 "$repository"
+        '';
       };
     };
 
@@ -144,6 +186,16 @@ in
         Persistent = true;
         RandomizedDelaySec = "30m";
         Unit = "server-backup.service";
+      };
+    };
+
+    systemd.timers.server-backup-prune = {
+      description = "Weekly Borg backup retention";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "Sun 05:00";
+        Persistent = true;
+        Unit = "server-backup-prune.service";
       };
     };
   };

@@ -55,7 +55,7 @@ let
       fi
     '';
   mkPruneScript =
-    name: service_name: target:
+    name: service_name: target: retention:
     pkgs.writeShellScript "${name}-prune" ''
       script_name="Backup manager"
       export BORG_PASSPHRASE="$(cat "${config.sops.secrets.borg_password.path}")"
@@ -65,9 +65,9 @@ let
       notify "Starting prune of ${name}..."
       ${pkgs.borgbackup}/bin/borg prune \
         --list \
-        --keep-daily=7 \
-        --keep-weekly=4 \
-        --keep-monthly=6 \
+        --keep-daily=${retention.daily} \
+        --keep-weekly=${retention.weekly} \
+        --keep-monthly=${retention.monthly} \
         "${target}"
       return_code=$?
       if [ $return_code -eq 0 ] || [ $return_code -eq 1 ]; then
@@ -101,6 +101,20 @@ in
         "/home/user/Pictures"
       ];
       default = [ ];
+    };
+    retention = {
+      daily = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 7;
+      };
+      weekly = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 4;
+      };
+      monthly = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 2;
+      };
     };
   };
 
@@ -185,7 +199,7 @@ in
             Type = "oneshot";
             StandardOutput = "journal";
             StandardError = "journal";
-            ExecStart = mkPruneScript hostName "backup-prune" config.backup.target;
+            ExecStart = mkPruneScript hostName "backup-prune" config.backup.target config.backup.retention;
           };
         };
       };

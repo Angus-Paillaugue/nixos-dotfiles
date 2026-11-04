@@ -1,7 +1,12 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   dockerDir = config.services.serverBackup.dockerDir;
-  paperlessDir = "${dockerDir}/paperless";
+  paperlessDir = lib.escapeShellArg "${dockerDir}/paperless";
 in
 {
   # Restoring : https://docs.paperless-ngx.com/administration/#exporter

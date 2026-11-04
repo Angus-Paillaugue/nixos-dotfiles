@@ -1,7 +1,12 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   dockerDir = config.services.serverBackup.dockerDir;
-  authentikDir = "${dockerDir}/authentik";
+  authentikDir = lib.escapeShellArg "${dockerDir}/authentik";
 in
 {
   # Restore : https://docs.goauthentik.io/sys-mgmt/ops/backup-restore/#restore

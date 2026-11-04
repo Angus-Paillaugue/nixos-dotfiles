@@ -1,7 +1,12 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   dockerDir = config.services.serverBackup.dockerDir;
-  giteaDir = "${dockerDir}/git";
+  giteaDir = lib.escapeShellArg "${dockerDir}/git";
 in
 {
   # Restoring : https://docs.gitea.com/next/administration/backup-and-restore/#using-docker-restore

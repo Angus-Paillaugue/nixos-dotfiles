@@ -12,7 +12,6 @@ in
       "${mediaDir}/Jellyfin/prowlarr-config/Backups"
       "${mediaDir}/Jellyfin/radarr-config/Backups"
       "${mediaDir}/Jellyfin/sonarr-config/Backups"
-      
       "${mediaDir}/ntfy"
     ];
   };

@@ -65,8 +65,6 @@ let
       notify "Starting prune of ${name}..."
       ${pkgs.borgbackup}/bin/borg prune \
         --list \
-        --prefix '{hostname}-' \
-        --show-rc \
         --keep-daily=7 \
         --keep-weekly=4 \
         --keep-monthly=6 \

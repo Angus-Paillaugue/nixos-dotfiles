@@ -11,6 +11,7 @@
       modules = [
         ../hosts/${name}/configuration.nix
         inputs.home-manager.nixosModules.default
+        inputs.sops-nix.nixosModules.sops
         (import ../overlays { inherit inputs; })
         {
           home-manager.useGlobalPkgs = true;

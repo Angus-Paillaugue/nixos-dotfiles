@@ -1,6 +1,8 @@
 { lib, ... }: {
-  imports = lib.myLib.listNixRecursively {
-    source = ./.;
-    omit = [ ./default.nix ];
-  };
+  imports =
+    lib.myLib.listNix {
+      source = ./.;
+      omit = [ ./default.nix ];
+    }
+    ++ [ ./backups/default.nix ];
 }

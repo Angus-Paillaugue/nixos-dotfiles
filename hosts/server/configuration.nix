@@ -55,6 +55,7 @@ in
     wget
     jq
     btop
+    bun
   ];
 
   programs = {

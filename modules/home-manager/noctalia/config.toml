@@ -6,7 +6,7 @@ high_contrast = false
 
 [wallpaper]
 enabled = true
-fill_mode = "crop"        # center | crop | fit | stretch | repeat | span
+fill_mode = "crop"                  # center | crop | fit | stretch | repeat | span
 transition = ["disc"]
 transition_duration = 1500          # milliseconds
 edge_smoothness = 0.3
@@ -14,7 +14,7 @@ transition_on_startup = false       # animate the first wallpaper at shell start
 directory = "~/Pictures/Wallpapers"
 
 [wallpaper.default]
-path = ""                            # optional initial/default wallpaper path
+path = "" # optional initial/default wallpaper path
 
 [wallpaper.automation]
 enabled = false
@@ -22,68 +22,90 @@ enabled = false
 # ── Theme ─────────────────────────────────────────────────────────────────────
 
 [theme]
-mode = "dark"                       # dark | light | auto
-source = "wallpaper"                # builtin | wallpaper | community
+mode = "dark"        # dark | light | auto
+source = "wallpaper" # builtin | wallpaper | community
 # builtin = "Noctalia"              # Ayu | Catppuccin | Dracula | Eldritch | Gruvbox |
-                                    # Kanagawa | Noctalia | Nord | Rosé Pine | Tokyo-Night
+# Kanagawa | Noctalia | Nord | Rosé Pine | Tokyo-Night
 # community_palette = "Noctalia"    # fetched from api.noctalia.dev, cached locally
-wallpaper_scheme = "m3-content"     # m3-tonal-spot | m3-content | m3-fruit-salad |
-                                    # m3-rainbow | m3-monochrome | vibrant | faithful |
-                                    # dysfunctional | muted
-pure_black_dark = false             # anchor dark surfaces to true black (OLED); applies to
-                                    # every palette source, not just wallpaper-generated ones
+wallpaper_scheme = "m3-content" # m3-tonal-spot | m3-content | m3-fruit-salad |
+# m3-rainbow | m3-monochrome | vibrant | faithful |
+# dysfunctional | muted
+pure_black_dark = false # anchor dark surfaces to true black (OLED); applies to
+# every palette source, not just wallpaper-generated ones
 
 [theme.templates]
 enable_builtin_templates = true
-builtin_ids = [ "btop", "gtk3", "gtk4", "hyprland", "kitty", "qt", "starship" ]
+builtin_ids = ["btop", "gtk3", "gtk4", "hyprland", "kitty", "qt", "starship"]
 enable_community_templates = true
-community_ids = [ "zen-browser", "fastfetch", "bat", "steam", "prismlauncher", "obsidian" ]     # fetched from api.noctalia.dev/templates, cached locally
+community_ids = [
+  "zen-browser",
+  "fastfetch",
+  "bat",
+  "steam",
+  "prismlauncher",
+  "obsidian",
+] # fetched from api.noctalia.dev/templates, cached locally
 
 # ── Backdrop ──────────────────────────────────────────────────────────────────
 
 [backdrop]
 enabled = false
-blur_intensity = 0.5        # 0.0 = no blur, 1.0 = maximum
-tint_intensity = 0.3        # 0.0 = no tint, 1.0 = opaque
+blur_intensity = 0.5 # 0.0 = no blur, 1.0 = maximum
+tint_intensity = 0.3 # 0.0 = no tint, 1.0 = opaque
 
 # ── Notifications ─────────────────────────────────────────────────────────────
 
 [notification]
 enable_daemon = true
 show_app_name = true
-show_actions = true           # show action buttons; when false, clicking a toast triggers its default action
-layer = "top"          # top | overlay
-scale = 1.0            # notification size multiplier applied on top of accessibility.ui_scale
-background_opacity = 0.97
-offset_x = 20             # absolute horizontal margin from the screen edge
-offset_y = 8              # absolute vertical margin from the screen edge
+show_actions = true # show action buttons; when false, clicking a toast triggers its default action
+layer = "top" # top | overlay
+scale = 1.0 # notification size multiplier applied on top of accessibility.ui_scale
+show_progress_bar = true # show the timeout progress bar (and critical persistent accent)
+position = "top_right" # top_right | top_left | top_center | bottom_right | bottom_left | bottom_center
+width = 360 # toast width in pixels before scaling (240–500)
+background_opacity = 0.97 # toast card background alpha; lower values let compositor blur show through
+border = true # outline around toast cards; set false for a borderless look
+border_color = "outline_variant" # outline color: theme color role (e.g. "primary") or hex (e.g. "#a8b185")
+border_width = 1 # outline stroke width in px; raise for a thicker outline
+follow_focused_output = false # show new toasts on the focused output; keep visible toasts pinned
+offset_x = 8 # absolute horizontal margin from the screen edge
+offset_y = 8 # absolute vertical margin from the screen edge
+monitors = [
+] # empty = all monitors; otherwise connector/description selectors (e.g. ["eDP-1", "DP-1"])
+newest_on_edge = false # place new toasts against the anchored screen edge, pushing older ones away
+collapse_on_dismiss = true # slide remaining toasts to close gaps when one is dismissed
+keep_dismissed_in_history = true # keep history entries when their toasts are dismissed
+group_by_app = true # group notification history by application in Control Center
+max_visible = 3 # maximum on-screen toasts; 0 = fill available space (all visible)
+history_retention_hours = 0 # delete stored history older than this; 0 keeps it indefinitely
 
 # ── OSD ───────────────────────────────────────────────────────────────────────
 
 [osd]
-position = "bottom_center"              # top_right | top_left | top_center | bottom_right | bottom_left | bottom_center | center_right | center_left
-position_vertical = "bottom_center"    # same options; used when orientation = "vertical"
+position = "bottom_center"          # top_right | top_left | top_center | bottom_right | bottom_left | bottom_center | center_right | center_left
+position_vertical = "bottom_center" # same options; used when orientation = "vertical"
 orientation = "horizontal"          # horizontal | vertical (volume/brightness sliders only; text popups stay horizontal)
 scale = 1.0                         # OSD size multiplier applied on top of accessibility.ui_scale
 background_opacity = 0.97           # background opacity of OSD popups
 offset_x = 20                       # absolute horizontal margin from the screen edge
-offset_y = 8                        # absolute vertical margin from the screen edge
+offset_y = 24                       # absolute vertical margin from the screen edge
 # monitors = ["DP-1"]               # connector names; omit or leave empty for all monitors
 
 [osd.kinds]
-volume = true                       # master volume OSD toggle
-volume_output = true                # output (speaker) volume; requires volume = true
-volume_input = true                 # input (microphone) volume; requires volume = true
-brightness = true                   # display brightness changes
-wifi = true                         # Wi-Fi toggle
-bluetooth = true                    # Bluetooth toggle
-power_profile = true                # power profile changes
-caffeine = true                     # idle inhibitor (caffeine) toggle
-nightlight = true                   # night light toggle
-dnd = true                          # Do Not Disturb toggle
-lock_keys = true                    # Caps/Num/Scroll Lock changes; disable to stop polling when no widget uses them
-keyboard_layout = true              # input keyboard layout changes
-privacy = true                      # microphone/camera/screen-share capture changes
+volume = true          # master volume OSD toggle
+volume_output = true   # output (speaker) volume; requires volume = true
+volume_input = true    # input (microphone) volume; requires volume = true
+brightness = true      # display brightness changes
+wifi = true            # Wi-Fi toggle
+bluetooth = true       # Bluetooth toggle
+power_profile = true   # power profile changes
+caffeine = true        # idle inhibitor (caffeine) toggle
+nightlight = true      # night light toggle
+dnd = true             # Do Not Disturb toggle
+lock_keys = true       # Caps/Num/Scroll Lock changes; disable to stop polling when no widget uses them
+keyboard_layout = true # input keyboard layout changes
+privacy = true         # microphone/camera/screen-share capture changes
 
 # ── Lock Screen ───────────────────────────────────────────────────────────────
 
@@ -96,7 +118,7 @@ tint_intensity = 0.3
 [lockscreen_widgets]
 enabled = true
 schema_version = 2
-widget_order = [ "lockscreen-login-box@HDMI-A-1", "clock", "date" ]
+widget_order = ["lockscreen-login-box@HDMI-A-1", "clock", "date"]
 
 [lockscreen_widgets.grid]
 cell_size = 16
@@ -168,34 +190,34 @@ format = "{:%A %d %B}"
 # ── System Monitor ────────────────────────────────────────────────────────────
 
 [system.monitor]
-enabled = true                      # sample CPU, memory, network, load, temperature, GPU VRAM, and disk statistics
-cpu_poll_seconds = 2.0              # CPU usage, CPU temperature, and load average
-cpu_freq_activity_threshold = 2.5   # GHz; value tint starts when CPU clock crosses this
-cpu_freq_critical_threshold = 4.5   # GHz; full highlight at/above this
-gpu_poll_seconds = 5.0              # GPU temperature and VRAM usage
-memory_poll_seconds = 2.0           # RAM usage
-network_poll_seconds = 3.0          # network throughput
-disk_poll_seconds = 10.0            # disk usage and swap usage; graph widgets use the fastest poll above
+enabled = true                    # sample CPU, memory, network, load, temperature, GPU VRAM, and disk statistics
+cpu_poll_seconds = 2.0            # CPU usage, CPU temperature, and load average
+cpu_freq_activity_threshold = 2.5 # GHz; value tint starts when CPU clock crosses this
+cpu_freq_critical_threshold = 4.5 # GHz; full highlight at/above this
+gpu_poll_seconds = 5.0            # GPU temperature and VRAM usage
+memory_poll_seconds = 2.0         # RAM usage
+network_poll_seconds = 3.0        # network throughput
+disk_poll_seconds = 10.0          # disk usage and swap usage; graph widgets use the fastest poll above
 
 # ── Weather ───────────────────────────────────────────────────────────────────
 
 [weather]
 enabled = true
 refresh_minutes = 30
-unit = "celsius"         # celsius | fahrenheit
-effects = true              # visual weather effects
+unit = "celsius"     # celsius | fahrenheit
+effects = true       # visual weather effects
 # Weather uses the coordinates resolved by [location] (see below).
 
 # ── Audio ─────────────────────────────────────────────────────────────────────
 
 [audio]
-enable_overdrive           = false  # allow volume sliders above 100% (up to 150%)
-enable_sounds              = true   # master toggle for shell sounds (plugins unaffected)
-enable_volume_sounds       = true   # sound on volume changes
-enable_notification_sounds = true   # sound on notifications
-enable_power_sounds        = true   # sound on charger connect/disconnect
-enable_screenshot_sounds   = false  # sound on screenshots
-sound_theme                = "freedesktop"
+enable_overdrive = false          # allow volume sliders above 100% (up to 150%)
+enable_sounds = true              # master toggle for shell sounds (plugins unaffected)
+enable_volume_sounds = true       # sound on volume changes
+enable_notification_sounds = true # sound on notifications
+enable_power_sounds = true        # sound on charger connect/disconnect
+enable_screenshot_sounds = false  # sound on screenshots
+sound_theme = "freedesktop"
 
 # ── Brightness ────────────────────────────────────────────────────────────────
 
@@ -207,8 +229,8 @@ enable_ddcutil = false
 [nightlight]
 enabled = false
 force = false
-temperature_day = 6500         # Kelvin
-temperature_night = 4000         # Kelvin
+temperature_day = 6500   # Kelvin
+temperature_night = 4000 # Kelvin
 
 # ── Keybinds ──────────────────────────────────────────────────────────────────
 
@@ -237,7 +259,7 @@ auto_locate = true
 # |____/ \__,_|_|
 
 [bar.main]
-position = "top"          # top | bottom | left | right
+position = "top"            # top | bottom | left | right
 thickness = 38
 background_opacity = 1.0
 radius_top_left = 0
@@ -256,8 +278,31 @@ reserve_space = true
 capsule = false
 
 start = ["active_window"]
-center = ["cpu", "ram", "temp", "gap64", "workspaces", "gap64", "clock", "gap32", "battery", "gap32", "screenshot", "oldirtty/color_picker:widget", "power_profile"]
-end = ["tray", "privacy", "gap32", "keyboard_layout", "bluetooth", "davemhammer/tailscale:status", "network", "notifications"]
+center = [
+  "cpu",
+  "ram",
+  "temp",
+  "gap64",
+  "workspaces",
+  "gap64",
+  "clock",
+  "gap32",
+  "battery",
+  "gap32",
+  "screenshot",
+  "oldirtty/color_picker:widget",
+  "power_profile",
+]
+end = [
+  "tray",
+  "privacy",
+  "gap32",
+  "keyboard_layout",
+  "bluetooth",
+  "davemhammer/tailscale:status",
+  "network",
+  "notifications",
+]
 
 # Commands for the bar margin outside widget sections (dead zone):
 [bar.main.dead_zone.actions]
@@ -266,7 +311,11 @@ scroll_up = "panel-toggle control-center"
 scroll_down = "panel-toggle control-center"
 
 [plugins]
-enabled = ["davemhammer/tailscale", "oldirtty/color_picker", "noctalia/translator"]
+enabled = [
+  "davemhammer/tailscale",
+  "oldirtty/color_picker",
+  "noctalia/translator",
+]
 auto_update = "all" # "all" | "official" | "none"; background git updates on startup and every 6 hours
 
 [widget.gap64]
@@ -303,11 +352,11 @@ stat = "cpu_temp"
 label_show_units = false
 
 [widget.workspaces]
-style = "regular"       # regular | minimal | focus_hint
-show_labels = true      # false = unlabeled pills (Focus Hint: app icon only)
-label_source = "id"     # id | name
-max_label_chars = 2     # truncate long workspace names (e.g. "VESKTOP" → "VE")
-labels_only_when_occupied = false  # (1) (2*) ( ) (4) - occupied tags and the active tag show labels (*active but empty)
+style = "regular"                 # regular | minimal | focus_hint
+show_labels = true                # false = unlabeled pills (Focus Hint: app icon only)
+label_source = "id"               # id | name
+max_label_chars = 2               # truncate long workspace names (e.g. "VESKTOP" → "VE")
+labels_only_when_occupied = false # (1) (2*) ( ) (4) - occupied tags and the active tag show labels (*active but empty)
 hide_when_empty = false
 pill_scale = 1.0
 active_pill_size = 2.2
@@ -315,8 +364,8 @@ inactive_pill_size = 1.0
 focused_color = "primary"
 occupied_color = "secondary"
 urgent_color = "error"
-change_color_on_hover = true  # false = keep configured workspace colors while hovering
-focused_output_only = false  # true = only the focused monitor highlights its active workspace
+change_color_on_hover = true      # false = keep configured workspace colors while hovering
+focused_output_only = false       # true = only the focused monitor highlights its active workspace
 
 [widget.clock]
 format = "{:%H:%M} • {:%d/%m}"
@@ -324,7 +373,7 @@ vertical_format = "{:%H\n%M}"
 tooltip_format = "{:%A, %B %d, %Y}"
 scale = 1.0                         # multiplies the bar scale for this widget only
 font_weight = 600
-interactive = true                 # pass clicks/scrolls through to the bar and disable hover/tooltips
+interactive = true                  # pass clicks/scrolls through to the bar and disable hover/tooltips
 
 [widget.screenshot]
 glyph = "screenshot"
@@ -335,7 +384,7 @@ notify_on_peer_change = true
 show_counts = false
 
 [widget.power_profile.actions]
-scroll_up = "none"    # leave the wheel alone
+scroll_up = "none"   # leave the wheel alone
 scroll_down = "none"
 
 [widget.battery]
@@ -352,10 +401,10 @@ hide_inactive = true
 icon_spacing = 6
 
 [widget.keyboard_layout]
-display = "short"    # "short" (e.g. "DE") or "full" (full layout name)
+display = "short"               # "short" (e.g. "DE") or "full" (full layout name)
 show_glyph = true
 show_label = true
-hide_when_single_layout = false      # hide the widget when only one layout is configured
+hide_when_single_layout = false # hide the widget when only one layout is configured
 
 [widget.bluetooth]
 hide_when_no_connected_device = true
@@ -379,21 +428,21 @@ hide_when_no_unread = true
 # |____/|_| |_|\___|_|_|
 
 [shell]
-corner_radius_scale   = 1.0          # 0 = square, 1 = default, 2 = extra rounded
-font_family           = "JetBrainMono NF"
-time_format           = "{:%H:%M}"  # default shell UI time format
-date_format           = "%A, %x"    # default shell UI date format
-offline_mode          = false        # block all outgoing HTTP when true
+corner_radius_scale = 1.0       # 0 = square, 1 = default, 2 = extra rounded
+font_family = "JetBrainMono NF"
+time_format = "{:%H:%M}"        # default shell UI time format
+date_format = "%A, %x"          # default shell UI date format
+offline_mode = false            # block all outgoing HTTP when true
 # panel_anchor_bar   = "main"        # bar panels attach to without a source bar; omit = first enabled bar
-telemetry_enabled     = false        # send an anonymous startup ping
+telemetry_enabled = false                    # send an anonymous startup ping
 niri_overview_type_to_launch_enabled = false # opt in to type-to-launch from niri overview
-polkit_agent          = true
-password_style        = "random"    # default | random
-settings_show_advanced = true        # show advanced settings by default in Settings
+polkit_agent = true
+password_style = "random"                    # default | random
+settings_show_advanced = true                # show advanced settings by default in Settings
 # settings_window_translucent = false  # translucent settings window background
 # show_location = true         # hide weather location text in shell UI when false
 # app_icon_color = "on_surface" # ColorSpec role or #hex when colorize is enabled
-clipboard_enabled = true         # false disables clipboard panel, history, and compositor clipboard hooks
+clipboard_enabled = true            # false disables clipboard panel, history, and compositor clipboard hooks
 clipboard_history_max_entries = 100 # unpinned history cap (10–10000); pinned entries are extra
 # A Wayland selection is served by the app that owns it, so it dies when that app exits.
 # With this on, the shell claims it back so the item stays pasteable. Caveat: a password
@@ -401,69 +450,69 @@ clipboard_history_max_entries = 100 # unpinned history cap (10–10000); pinned 
 # so its secret can be kept alive too. Apps advertising x-kde-passwordManagerHint are
 # already excluded; set this to false if you rely on one that does not.
 clipboard_keep_from_closed_apps = true # keep the last copied item pasteable after the app you copied it from closes
-clipboard_auto_paste = "auto"       # off | auto | ctrl_v | ctrl_shift_v | shift_insert
-clipboard_image_action_command = ""  # image preview action: gimp {path}, or satty -f - via stdin
-shared_gl_context = true         # startup-only; false isolates GPU contexts for broken drivaers
+clipboard_auto_paste = "auto"          # off | auto | ctrl_v | ctrl_shift_v | shift_insert
+clipboard_image_action_command = ""    # image preview action: gimp {path}, or satty -f - via stdin
+shared_gl_context = true               # startup-only; false isolates GPU contexts for broken drivaers
 screen_time_enabled = true
 
-[shell.keyboard_layout.custom_labels]  # override display labels by exact layout name
+[shell.keyboard_layout.custom_labels] # override display labels by exact layout name
 "English (US)" = "EN"
 
 [shell.privacy]
-mic_filter_regex = ""                # microphone app names to ignore in privacy indicators and OSD
-cam_filter_regex = ""                # camera app names to ignore in privacy indicators and OSD
-screen_filter_regex = ""             # screen-sharing app names to ignore in privacy indicators and OSD
+mic_filter_regex = ""    # microphone app names to ignore in privacy indicators and OSD
+cam_filter_regex = ""    # camera app names to ignore in privacy indicators and OSD
+screen_filter_regex = "" # screen-sharing app names to ignore in privacy indicators and OSD
 
 [shell.animation]
 enabled = true
-speed = 1.0                       # 0.5 = 2× slower, 2.0 = 2× faster
+speed = 1.0    # 0.5 = 2× slower, 2.0 = 2× faster
 
 [shell.shadow]
-direction = "down"                  # center, up, down, left, right, up_left, up_right, down_left, down_right
-alpha = 0.55                    # multiplied by each component's background opacity
+direction = "down" # center, up, down, left, right, up_left, up_right, down_left, down_right
+alpha = 0.55       # multiplied by each component's background opacity
 
 [shell.panel]
-transparency_mode = "solid"     # solid | soft | glass; controls floating-panel opacity and card translucency
-borders = true        # panel shell outline and in-panel section cards
-shadow = true        # cast the global [shell.shadow] from panel surfaces
-launcher_placement = "attached" # attached | floating
-clipboard_placement = "attached" # attached | floating
-control_center_placement = "attached" # attached | floating
-wallpaper_placement = "attached" # attached | floating
-wallpaper_show_names = true   # caption wallpaper picker thumbnails with their file name
-session_placement = "attached" # attached | floating
-launcher_position = "center"   # auto | center | top_left | … (floating only)
-clipboard_position = "center"   # auto | center | top_left | … (floating only)
+transparency_mode = "solid"            # solid | soft | glass; controls floating-panel opacity and card translucency
+borders = true                         # panel shell outline and in-panel section cards
+shadow = true                          # cast the global [shell.shadow] from panel surfaces
+launcher_placement = "attached"        # attached | floating
+clipboard_placement = "attached"       # attached | floating
+control_center_placement = "attached"  # attached | floating
+wallpaper_placement = "attached"       # attached | floating
+wallpaper_show_names = true            # caption wallpaper picker thumbnails with their file name
+session_placement = "attached"         # attached | floating
+launcher_position = "center"           # auto | center | top_left | … (floating only)
+clipboard_position = "center"          # auto | center | top_left | … (floating only)
 open_near_click_control_center = false # for attached/floating placement, follow the bar click instead of bar-center
-open_near_click_launcher = false # for attached/floating placement, follow the bar click instead of bar-center
-open_near_click_clipboard = false # for attached/floating placement, follow the bar click instead of bar-center
-open_near_click_wallpaper = false # for attached/floating placement, follow the bar click instead of bar-center
-open_near_click_session = false # for attached/floating placement, follow the bar click instead of bar-center
+open_near_click_launcher = false       # for attached/floating placement, follow the bar click instead of bar-center
+open_near_click_clipboard = false      # for attached/floating placement, follow the bar click instead of bar-center
+open_near_click_wallpaper = false      # for attached/floating placement, follow the bar click instead of bar-center
+open_near_click_session = false        # for attached/floating placement, follow the bar click instead of bar-center
 
 [shell.launcher]
-categories = true                    # show category filters in the launcher
-show_icons = true                    # show application icons in launcher results
-show_app_origin_indicator = true        # show package origin indicators on application results
-compact = false                   # use smaller icons and tighter result rows
-app_grid = false                   # show app icon grid view when results are apps only
-sort_by_usage = true                    # sort apps by usage frequency
+categories = true                # show category filters in the launcher
+show_icons = true                # show application icons in launcher results
+show_app_origin_indicator = true # show package origin indicators on application results
+compact = false                  # use smaller icons and tighter result rows
+app_grid = false                 # show app icon grid view when results are apps only
+sort_by_usage = true             # sort apps by usage frequency
 pinned = []                      # e.g. ["firefox", "code", "kitty"] (launcher only)
-fetch_exchange_rates = true             # refresh currency rates from third-party sources
-provider_prefix = "/"                     # common prefix character for provider trigger words (e.g. "/" or ".")
-auto_paste = "auto"                       # off | auto | ctrl_v | ctrl_shift_v | shift_insert (copy activations)
+fetch_exchange_rates = true      # refresh currency rates from third-party sources
+provider_prefix = "/"            # common prefix character for provider trigger words (e.g. "/" or ".")
+auto_paste = "auto"              # off | auto | ctrl_v | ctrl_shift_v | shift_insert (copy activations)
 
 # For each provider: prefix = trigger word (empty falls back to its built-in default; triggers on
 # provider_prefix + trigger, e.g. "/emo"). global = true also surfaces it in unprefixed search.
 [shell.launcher.providers.calculator]
 prefix = "calc"
-global = true                           # also show calculator results in unprefixed search
+global = true   # also show calculator results in unprefixed search
 
 [shell.launcher.providers.emoji]
 prefix = "emo"
 
 [shell.launcher.providers.session]
 prefix = "session"
-global = false                          # set true to include session actions in unprefixed search
+global = false     # set true to include session actions in unprefixed search
 
 [shell.launcher.providers.wallpaper]
 prefix = "wall"
@@ -472,31 +521,31 @@ prefix = "wall"
 prefix = "win"
 
 [shell.mpris]
-blacklist = []                      # ignore MPRIS players by bus/identity/desktop entry token
+blacklist = [] # ignore MPRIS players by bus/identity/desktop entry token
 
 [shell.screenshot]
-save_to_file         = true                        # write captures to the output directory
-directory            = "~/Pictures/Screenshots"    # output folder; empty = XDG_PICTURES_DIR or ~/Pictures
-filename_pattern     = ""                          # empty = screenshot_%Y%m%d_%H%M%S
-format               = "png"                       # saved file format (png/jpeg/webp/jxl)
-quality              = 90                          # 1-100 for jpeg/webp/jxl; 100 = lossless webp/jxl
-copy_to_clipboard    = true                        # also place the PNG on the clipboard
-freeze_screen        = true                        # freeze the desktop before region selection
-confirm_region       = false                       # confirm region captures with Enter or Space
-remember_last_region = false                       # pre-select the last region (also after cancel)
-region_modifier      = "none"                      # modifier to move/resize a region (none/super/ctrl/alt/shift)
-region_border_width  = 2.0                         # border width around the selected region
-region_dim_opacity   = 0.65                        # opacity of dimmed area around region (0.0-1.0)
-show_region_hint     = true                        # show confirm hint with keybinds
-show_region_dimensions = true                      # show dimensions tooltip while resizing/moving region
-show_cursor          = false                       # include the mouse pointer in captures
-annotate             = false                       # open the annotator before saving or copying
-skip_annotate_on_copy_save = false                 # region overlay Copy/Save deliver without the annotator
-close_on_copy        = true                        # close the annotation editor after a successful Copy
-close_on_save        = true                        # close the annotation editor after a successful Save
-copy_on_close        = false                       # Closing the editor copies the annotated image first
-pipe_to_command      = false                       # pipe the PNG to a shell command on stdin
-pipe_command         = ""                          # annotator/uploader, e.g. "swappy -f -" or "satty -f -"
+save_to_file = true                  # write captures to the output directory
+directory = "~/Pictures/Screenshots" # output folder; empty = XDG_PICTURES_DIR or ~/Pictures
+filename_pattern = ""                # empty = screenshot_%Y%m%d_%H%M%S
+format = "png"                       # saved file format (png/jpeg/webp/jxl)
+quality = 90                         # 1-100 for jpeg/webp/jxl; 100 = lossless webp/jxl
+copy_to_clipboard = true             # also place the PNG on the clipboard
+freeze_screen = true                 # freeze the desktop before region selection
+confirm_region = false               # confirm region captures with Enter or Space
+remember_last_region = false         # pre-select the last region (also after cancel)
+region_modifier = "none"             # modifier to move/resize a region (none/super/ctrl/alt/shift)
+region_border_width = 2.0            # border width around the selected region
+region_dim_opacity = 0.65            # opacity of dimmed area around region (0.0-1.0)
+show_region_hint = true              # show confirm hint with keybinds
+show_region_dimensions = true        # show dimensions tooltip while resizing/moving region
+show_cursor = false                  # include the mouse pointer in captures
+annotate = false                     # open the annotator before saving or copying
+skip_annotate_on_copy_save = false   # region overlay Copy/Save deliver without the annotator
+close_on_copy = true                 # close the annotation editor after a successful Copy
+close_on_save = true                 # close the annotation editor after a successful Save
+copy_on_close = false                # Closing the editor copies the annotated image first
+pipe_to_command = false              # pipe the PNG to a shell command on stdin
+pipe_command = ""                    # annotator/uploader, e.g. "swappy -f -" or "satty -f -"
 
 [shell.greeter_sync]
 auto_sync = true
@@ -510,12 +559,12 @@ auto_sync = true
 [calendar]
 enabled = true
 refresh_minutes = 15
-event_date_format = "%A %e %B"    # date format used for events
-event_time_format = "%H:%M"       # time format used for events
+event_date_format = "%A %e %B" # date format used for events
+event_time_format = "%H:%M"    # time format used for events
 
 [control_center.calendar]
 show_events_card = true
-show_week_numbers = false         # ISO 8601 week numbers in the month grid
+show_week_numbers = false # ISO 8601 week numbers in the month grid
 
 [calendar.account.personal]
 name = "Personal"

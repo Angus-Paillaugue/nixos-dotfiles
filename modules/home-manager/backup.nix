@@ -65,9 +65,9 @@ let
       notify "Starting prune of ${name}..."
       ${pkgs.borgbackup}/bin/borg prune \
         --list \
-        --keep-daily=${retention.daily} \
-        --keep-weekly=${retention.weekly} \
-        --keep-monthly=${retention.monthly} \
+        --keep-daily=${toString retention.daily} \
+        --keep-weekly=${toString retention.weekly} \
+        --keep-monthly=${toString retention.monthly} \
         "${target}"
       return_code=$?
       if [ $return_code -eq 0 ] || [ $return_code -eq 1 ]; then

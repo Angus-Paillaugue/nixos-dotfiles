@@ -21,7 +21,7 @@
         ${if config.starship.enable then "${lib.getExe pkgs.starship} init fish | source" else ""}
 
         function ls
-          ${lib.getExe pkgs.eza} --icons --group-directories-first --color=always --classify $argv
+          ${lib.getExe pkgs.eza} --icons --group-directories-first --color=always --classify auto $argv
         end
         function ll
           ${lib.getExe pkgs.eza} -l --icons --group-directories-first --color=always --git $argv

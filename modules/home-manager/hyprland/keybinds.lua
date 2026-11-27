@@ -138,6 +138,9 @@ for i = 1, 4 do
   hl.bind("CTRL + SUPER + " .. key[i], hl.dsp.focus({ workspace = prefix[i] }))
 end
 
+-- Floating windows
+hl.bind(mainMod .. "+ F1", hl.dsp.window.float({ action = "toggle" }))
+
 -- Special workspace
 hl.bind(mainMod .. "+ ALT + S", hl.dsp.window.move({ workspace = "special:special", follow = false }))
 hl.bind("CTRL + SUPER + S", hl.dsp.workspace.toggle_special("special"))

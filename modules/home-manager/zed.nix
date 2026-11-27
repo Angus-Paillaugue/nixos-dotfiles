@@ -36,6 +36,7 @@
         "sql"
         "terraform"
         "xml"
+        "dart"
       ];
       userKeymaps = [
         {
